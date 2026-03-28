@@ -132,13 +132,17 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-56px)] flex flex-col bg-gradient-to-br from-background via-background to-secondary/20 text-foreground">
+    <div className="min-h-[calc(100vh-56px)] flex flex-col bg-gradient-to-br from-background via-purple-50/20 to-pink-50/20 text-foreground overflow-hidden">
+      {/* Decorative elements */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-purple-200/30 to-transparent rounded-full -mr-48 -mt-48 blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-pink-200/20 to-transparent rounded-full -ml-40 -mb-40 blur-3xl" />
+
       {isGenerating && <LoadingOverlay />}
 
-      <main className="flex-1">
-        <div className="max-w-4xl mx-auto px-4 py-8 md:py-16">
+      <main className="flex-1 relative z-10">
+        <div className="max-w-5xl mx-auto px-4 py-8 md:py-16">
           {error && (
-            <div className="mb-8 rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+            <div className="mb-8 rounded-xl border border-destructive/30 bg-destructive/5 px-5 py-4 text-sm text-destructive font-medium">
               {error}
             </div>
           )}
@@ -148,23 +152,26 @@ export default function HomePage() {
               <p className="text-sm text-muted-foreground">Loading categories…</p>
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 gap-12 items-start">
+            <div className="grid md:grid-cols-2 gap-16 items-start">
               {/* Hero Section - Left */}
-              <div className="space-y-8 flex flex-col justify-center">
-                <div className="space-y-4">
-                  <h1 className="text-5xl md:text-6xl font-serif font-bold leading-tight text-foreground">
-                    Daymark
-                  </h1>
-                  <p className="text-xl text-muted-foreground font-light leading-relaxed">
-                    Test your knowledge of today&apos;s news with daily quizzes. Get 6 chances to answer questions pulled from real articles.
+              <div className="space-y-10 flex flex-col justify-center pt-8">
+                <div className="space-y-6">
+                  <div className="space-y-3">
+                    <p className="text-sm font-semibold text-primary uppercase tracking-widest">Daily News Quiz</p>
+                    <h1 className="text-6xl md:text-7xl font-serif font-bold leading-tight bg-gradient-to-br from-foreground via-foreground to-foreground/70 bg-clip-text text-transparent">
+                      Daymark
+                    </h1>
+                  </div>
+                  <p className="text-lg text-muted-foreground leading-relaxed max-w-md font-light">
+                    Test your knowledge of today&apos;s biggest stories. Six questions pulled straight from real news articles. How well were you paying attention?
                   </p>
                 </div>
 
                 {!isAuthenticated && (
-                  <div className="pt-4">
+                  <div>
                     <Link href="/login">
-                      <Button size="lg" className="w-full md:w-auto">
-                        Sign in to save progress
+                      <Button size="lg" className="shadow-lg hover:shadow-xl hover:translate-y-[-2px] transition-all">
+                        Sign in to track progress
                       </Button>
                     </Link>
                   </div>
@@ -172,7 +179,7 @@ export default function HomePage() {
               </div>
 
               {/* Quiz Configuration - Right */}
-              <div className="bg-card rounded-xl border border-border/50 p-8 shadow-sm space-y-8">
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-border/60 p-10 shadow-xl space-y-8 sticky top-24 hover:shadow-2xl transition-shadow duration-300">
                 {/* Categories */}
                 <div className="space-y-4">
                   <label className="text-sm font-semibold text-foreground">Categories</label>
@@ -233,7 +240,7 @@ export default function HomePage() {
                 {/* Difficulty */}
                 <div className="space-y-4">
                   <label className="text-sm font-semibold text-foreground">Difficulty</label>
-                  <div className="space-y-2">
+                  <div className="space-y-2.5">
                     {DIFFICULTIES.map((difficulty) => {
                       const active = selectedDifficulty === difficulty.id;
                       return (
@@ -241,14 +248,14 @@ export default function HomePage() {
                           key={difficulty.id}
                           type="button"
                           onClick={() => setSelectedDifficulty(difficulty.id)}
-                          className={`w-full rounded-lg border px-4 py-3 text-left text-sm font-medium transition-all ${
+                          className={`w-full rounded-xl border-2 px-4 py-3.5 text-left text-sm font-medium transition-all duration-200 ${
                             active
-                              ? "border-primary bg-primary/10 text-primary"
-                              : "border-border bg-background hover:border-muted-foreground/30"
+                              ? "border-primary bg-gradient-to-r from-primary/15 to-primary/5 text-primary shadow-md"
+                              : "border-border/50 bg-background/50 hover:border-primary/30 hover:bg-background"
                           }`}
                         >
-                          <div className="font-semibold">{difficulty.label}</div>
-                          <p className="text-xs text-muted-foreground mt-1">{difficulty.description}</p>
+                          <div className="font-bold text-base">{difficulty.label}</div>
+                          <p className={`text-xs mt-1.5 ${active ? 'text-primary/70' : 'text-muted-foreground'}`}>{difficulty.description}</p>
                         </button>
                       );
                     })}

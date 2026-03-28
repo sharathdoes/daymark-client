@@ -3,45 +3,45 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* light theme - Modern & Polished */
+/* light theme - Premium & Engaging */
 :root {
-  --background: #fafaf8;
-  --foreground: #1a1a18;
+  --background: #f8f6f3;
+  --foreground: #1a1a1a;
   --card: #ffffff;
-  --card-foreground: #1a1a18;
+  --card-foreground: #1a1a1a;
   --popover: #ffffff;
-  --popover-foreground: #1a1a18;
-  --primary: #2563eb;
+  --popover-foreground: #1a1a1a;
+  --primary: #6366f1;
   --primary-foreground: #ffffff;
-  --secondary: #f0f0eb;
-  --secondary-foreground: #3f3f3d;
-  --muted: #a8a8a3;
-  --muted-foreground: #6b6b68;
-  --accent: #2563eb;
+  --secondary: #f3f1ee;
+  --secondary-foreground: #403d39;
+  --muted: #b8b4ae;
+  --muted-foreground: #706b64;
+  --accent: #ec4899;
   --accent-foreground: #ffffff;
-  --destructive: #dc2626;
-  --border: #e5e5e0;
+  --destructive: #ef4444;
+  --border: #e8e4df;
   --input: #ffffff;
-  --ring: #2563eb;
+  --ring: #6366f1;
   --chart-1: #10b981;
   --chart-2: #f59e0b;
   --chart-3: #ef4444;
   --chart-4: #8b5cf6;
   --chart-5: #06b6d4;
   --sidebar: #ffffff;
-  --sidebar-foreground: #1a1a18;
-  --sidebar-primary: #2563eb;
+  --sidebar-foreground: #1a1a1a;
+  --sidebar-primary: #6366f1;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f0f0eb;
-  --sidebar-accent-foreground: #1a1a18;
-  --sidebar-border: #e5e5e0;
-  --sidebar-ring: #2563eb;
+  --sidebar-accent: #f3f1ee;
+  --sidebar-accent-foreground: #1a1a1a;
+  --sidebar-border: #e8e4df;
+  --sidebar-ring: #6366f1;
 
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
   --font-serif: "Georgia", "Times New Roman", serif;
   --font-mono: "Menlo", "Monaco", monospace;
 
-  --radius: 0.5rem;
+  --radius: 0.75rem;
 }
 
 .dark {

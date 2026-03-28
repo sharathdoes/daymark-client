@@ -107,13 +107,13 @@ export default function QuizContent() {
       </div>
 
       {/* Question */}
-      <div className="space-y-4 border-t border-border pt-8">
-        <h2 className="text-lg md:text-xl font-serif font-bold leading-relaxed text-foreground">
+      <div className="space-y-6 border-t border-border/50 pt-10">
+        <h2 className="text-2xl md:text-3xl font-serif font-bold leading-relaxed text-foreground">
           {currentQuestion.question}
         </h2>
 
         {/* Options */}
-        <div className="space-y-3">
+        <div className="space-y-3.5">
           {currentQuestion.options.map((option, index) => {
             const isSelected = index === selectedAnswer
 
@@ -122,16 +122,20 @@ export default function QuizContent() {
                 key={index}
                 type="button"
                 onClick={() => handleOptionClick(index)}
-                className={`flex w-full items-start gap-3 rounded-sm border px-4 py-3 text-left transition-colors cursor-pointer ${
+                className={`group flex w-full items-start gap-4 rounded-xl border-2 px-5 py-4 text-left transition-all duration-200 cursor-pointer ${
                   isSelected
-                    ? 'border-foreground bg-foreground text-background'
-                    : 'border-border bg-background hover:bg-muted'
+                    ? 'border-primary bg-gradient-to-br from-primary/15 to-primary/5 shadow-lg'
+                    : 'border-border/60 bg-background hover:border-primary/30 hover:bg-secondary/40 hover:shadow-md'
                 }`}
               >
-                <span className="mt-0.5 w-5 flex-shrink-0 text-xs font-semibold text-center">
+                <span className={`mt-1 w-6 h-6 flex-shrink-0 rounded-lg flex items-center justify-center text-xs font-bold transition-all ${
+                  isSelected
+                    ? 'bg-primary text-white'
+                    : 'bg-secondary text-muted-foreground group-hover:bg-primary/20'
+                }`}>
                   {LETTER_LABELS[index]}
                 </span>
-                <span className="flex-1 text-sm md:text-base leading-relaxed">
+                <span className="flex-1 text-base md:text-lg leading-relaxed font-medium">
                   {option}
                 </span>
               </button>
