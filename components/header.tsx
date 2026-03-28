@@ -21,26 +21,26 @@ export default function Header({ hideAuth = false }: HeaderProps) {
   }
 
   return (
-    <header className="border-b border-border bg-background">
+    <header className="border-b border-border/50 bg-background/95 backdrop-blur-sm shadow-sm sticky top-0 z-40">
       <div className="max-w-4xl mx-auto flex items-center justify-between h-14 px-4 md:px-6">
-        {/* Logo - NYT style centered */}
+        {/* Logo */}
         <Link
           href="/"
-          className="text-xl md:text-2xl font-bold font-serif text-foreground hover:opacity-75 transition-opacity"
+          className="text-xl font-bold font-serif text-foreground hover:text-primary transition-colors"
         >
           Daymark
         </Link>
 
         {/* Right actions */}
         {!hideAuth && (
-          <div className="flex items-center gap-2 md:gap-4">
+          <div className="flex items-center gap-3">
             {isAuthenticated && user ? (
-              <div className="flex items-center gap-2 md:gap-3">
+              <div className="flex items-center gap-3">
                 <Link
                   href="/profile"
                   className="flex items-center gap-2 hover:opacity-75 transition-opacity"
                 >
-                  <Avatar className="h-6 w-6 md:h-7 md:w-7">
+                  <Avatar className="h-6 w-6">
                     <AvatarImage
                       src={
                         user.avatar_url ||
@@ -52,7 +52,7 @@ export default function Header({ hideAuth = false }: HeaderProps) {
                       {(user.name || user.email || '?').charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="hidden md:inline text-xs md:text-sm text-foreground">
+                  <span className="hidden md:inline text-sm text-muted-foreground">
                     {user.name || user.email}
                   </span>
                 </Link>
@@ -63,14 +63,13 @@ export default function Header({ hideAuth = false }: HeaderProps) {
                   size="icon-sm"
                   onClick={handleLogout}
                   aria-label="Log out"
-                  className="hover:bg-muted"
                 >
                   <LogOut className="h-4 w-4" />
                 </Button>
               </div>
             ) : (
               <Link href="/login">
-                <Button type="button" variant="outline" size="sm">Sign in</Button>
+                <Button type="button" variant="default" size="sm">Sign in</Button>
               </Link>
             )}
           </div>

@@ -94,27 +94,30 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-56px)] flex items-center justify-center bg-background px-4 py-12">
+    <div className="min-h-[calc(100vh-56px)] flex items-center justify-center bg-gradient-to-br from-background via-background to-secondary/10 px-4 py-12">
       <div className="w-full max-w-md">
         <div className="space-y-8">
           {/* Header */}
-          <div className="text-center space-y-2">
-            <h1 className="text-3xl md:text-4xl font-serif font-bold text-foreground">
-              Log in or create an account
+          <div className="text-center space-y-3">
+            <h1 className="text-4xl font-serif font-bold text-foreground">
+              Create account
             </h1>
+            <p className="text-muted-foreground">
+              Join to save your quiz progress
+            </p>
           </div>
 
           {error && (
-            <div className="rounded-sm border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+            <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive">
               {error}
             </div>
           )}
 
           {/* Form */}
           {step === 'form' ? (
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-foreground" htmlFor="name">
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="space-y-2.5">
+                <label className="text-sm font-medium text-foreground" htmlFor="name">
                   Full name
                 </label>
                 <Input
@@ -122,15 +125,14 @@ export default function SignupPage() {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder=""
+                  placeholder="Alex Taylor"
                   required
                   autoComplete="name"
-                  className="border-foreground rounded-sm"
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-foreground" htmlFor="email">
+              <div className="space-y-2.5">
+                <label className="text-sm font-medium text-foreground" htmlFor="email">
                   Email address
                 </label>
                 <Input
@@ -138,15 +140,14 @@ export default function SignupPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder=""
+                  placeholder="you@example.com"
                   required
                   autoComplete="email"
-                  className="border-foreground rounded-sm"
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-foreground" htmlFor="password">
+              <div className="space-y-2.5">
+                <label className="text-sm font-medium text-foreground" htmlFor="password">
                   Password
                 </label>
                 <Input
@@ -154,39 +155,37 @@ export default function SignupPage() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder=""
+                  placeholder="••••••••"
                   required
                   autoComplete="new-password"
-                  className="border-foreground rounded-sm"
                 />
               </div>
 
               <Button
                 type="submit"
-                className="w-full h-10 bg-foreground text-background font-semibold hover:bg-foreground/90"
+                size="lg"
+                className="w-full"
                 disabled={isLoading}
               >
                 {isLoading ? 'Sending code…' : 'Continue'}
               </Button>
             </form>
           ) : (
-            <form onSubmit={handleVerify} className="space-y-6">
+            <form onSubmit={handleVerify} className="space-y-5">
               <div className="space-y-2">
                 <p className="text-sm text-foreground">
-                  We&apos;ve sent a 6-digit code to <span className="font-semibold">{pendingEmail || email}</span>.
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Enter it below to verify your email and create your account.
+                  We&apos;ve sent a verification code to{" "}
+                  <span className="font-semibold">{pendingEmail || email}</span>
                 </p>
                 {devOtp && (
-                  <p className="text-xs text-muted-foreground mt-3">
-                    Dev only: code is <span className="font-mono font-semibold">{devOtp}</span>
+                  <p className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg p-2 mt-2">
+                    Dev: <span className="font-mono font-semibold">{devOtp}</span>
                   </p>
                 )}
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-foreground" htmlFor="otp">
+              <div className="space-y-2.5">
+                <label className="text-sm font-medium text-foreground" htmlFor="otp">
                   Verification code
                 </label>
                 <Input
@@ -197,65 +196,68 @@ export default function SignupPage() {
                   maxLength={6}
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
-                  placeholder=""
+                  placeholder="000000"
                   required
-                  className="border-foreground rounded-sm text-center text-lg tracking-widest"
+                  className="text-center text-lg tracking-widest font-mono"
                 />
               </div>
 
               <Button
                 type="submit"
-                className="w-full h-10 bg-foreground text-background font-semibold hover:bg-foreground/90"
+                size="lg"
+                className="w-full"
                 disabled={isLoading}
               >
-                {isLoading ? 'Verifying…' : 'Verify & create account'}
+                {isLoading ? 'Verifying…' : 'Verify & create'}
               </Button>
             </form>
           )}
 
           {/* Divider */}
-          <div className="relative text-center text-xs text-muted-foreground">
-            <span className="bg-background px-2 relative z-10">
-              or
-            </span>
-            <div className="absolute inset-x-0 top-1/2 -z-0 h-px bg-border" aria-hidden="true" />
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-border/50" />
+            </div>
+            <div className="relative flex justify-center text-xs">
+              <span className="bg-background px-2 text-muted-foreground">or sign up with</span>
+            </div>
           </div>
 
           {/* Social buttons */}
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             <Button
               type="button"
               variant="outline"
-              className="w-full justify-center h-10 font-semibold"
+              size="lg"
+              className="w-full"
               onClick={loginWithGoogle}
             >
-              Continue with Google
+              Google
             </Button>
             <Button
               type="button"
               variant="outline"
-              className="w-full justify-center h-10 font-semibold"
+              size="lg"
+              className="w-full"
               onClick={loginWithGithub}
             >
-              Continue with GitHub
+              GitHub
             </Button>
           </div>
 
           {/* Legal text */}
           <p className="text-center text-xs text-muted-foreground leading-relaxed">
-            By continuing, you agree to the{" "}
-            <a href="#" className="underline hover:no-underline">Terms of Service</a>
-            , {" "}
-            <a href="#" className="underline hover:no-underline">Privacy Policy</a>
+            By signing up, you agree to our{" "}
+            <a href="#" className="text-primary hover:underline">Terms of Service</a>
             {" "}and{" "}
-            <a href="#" className="underline hover:no-underline">Cookie Policy</a>
+            <a href="#" className="text-primary hover:underline">Privacy Policy</a>
             .
           </p>
 
           {/* Sign in link */}
-          <p className="text-center text-xs text-muted-foreground">
+          <p className="text-center text-sm text-muted-foreground">
             Already have an account?{' '}
-            <Link href="/login" className="font-semibold underline hover:no-underline">
+            <Link href="/login" className="text-primary font-medium hover:underline">
               Sign in
             </Link>
           </p>

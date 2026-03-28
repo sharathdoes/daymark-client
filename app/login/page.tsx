@@ -103,26 +103,29 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-56px)] flex items-center justify-center bg-background px-4 py-12">
+    <div className="min-h-[calc(100vh-56px)] flex items-center justify-center bg-gradient-to-br from-background via-background to-secondary/10 px-4 py-12">
       <div className="w-full max-w-md">
         <div className="space-y-8">
           {/* Header */}
-          <div className="text-center space-y-2">
-            <h1 className="text-3xl md:text-4xl font-serif font-bold text-foreground">
-              Log in or create an account
+          <div className="text-center space-y-3">
+            <h1 className="text-4xl font-serif font-bold text-foreground">
+              Log in
             </h1>
+            <p className="text-muted-foreground">
+              Sign in to your account to continue
+            </p>
           </div>
 
           {error && (
-            <div className="rounded-sm border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+            <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive">
               {error}
             </div>
           )}
 
           {/* Email form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-foreground" htmlFor="email">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-2.5">
+              <label className="text-sm font-medium text-foreground" htmlFor="email">
                 Email address
               </label>
               <Input
@@ -130,15 +133,14 @@ export default function LoginPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder=""
+                placeholder="you@example.com"
                 required
                 autoComplete="email"
-                className="border-foreground rounded-sm"
               />
             </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-foreground" htmlFor="password">
+            <div className="space-y-2.5">
+              <label className="text-sm font-medium text-foreground" htmlFor="password">
                 Password
               </label>
               <Input
@@ -146,65 +148,67 @@ export default function LoginPage() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder=""
+                placeholder="••••••••"
                 required
                 autoComplete="current-password"
-                className="border-foreground rounded-sm"
               />
             </div>
 
             <Button
               type="submit"
-              className="w-full h-10 bg-foreground text-background font-semibold hover:bg-foreground/90"
+              size="lg"
+              className="w-full"
               disabled={isLoading}
             >
-              {isLoading ? 'Continuing…' : 'Continue'}
+              {isLoading ? 'Signing in…' : 'Sign in'}
             </Button>
           </form>
 
           {/* Divider */}
-          <div className="relative text-center text-xs text-muted-foreground">
-            <span className="bg-background px-2 relative z-10">
-              or
-            </span>
-            <div className="absolute inset-x-0 top-1/2 -z-0 h-px bg-border" aria-hidden="true" />
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-border/50" />
+            </div>
+            <div className="relative flex justify-center text-xs">
+              <span className="bg-background px-2 text-muted-foreground">or continue with</span>
+            </div>
           </div>
 
           {/* Social buttons */}
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             <Button
               type="button"
               variant="outline"
-              className="w-full justify-center h-10 font-semibold"
+              size="lg"
+              className="w-full"
               onClick={loginWithGoogle}
             >
-              Continue with Google
+              Google
             </Button>
             <Button
               type="button"
               variant="outline"
-              className="w-full justify-center h-10 font-semibold"
+              size="lg"
+              className="w-full"
               onClick={loginWithGithub}
             >
-              Continue with GitHub
+              GitHub
             </Button>
           </div>
 
           {/* Legal text */}
           <p className="text-center text-xs text-muted-foreground leading-relaxed">
-            By continuing, you agree to the{" "}
-            <a href="#" className="underline hover:no-underline">Terms of Service</a>
-            , {" "}
-            <a href="#" className="underline hover:no-underline">Privacy Policy</a>
+            By signing in, you agree to our{" "}
+            <a href="#" className="text-primary hover:underline">Terms of Service</a>
             {" "}and{" "}
-            <a href="#" className="underline hover:no-underline">Cookie Policy</a>
+            <a href="#" className="text-primary hover:underline">Privacy Policy</a>
             .
           </p>
 
           {/* Sign up link */}
-          <p className="text-center text-xs text-muted-foreground">
+          <p className="text-center text-sm text-muted-foreground">
             Don&apos;t have an account?{' '}
-            <Link href="/signup" className="font-semibold underline hover:no-underline">
+            <Link href="/signup" className="text-primary font-medium hover:underline">
               Sign up
             </Link>
           </p>
