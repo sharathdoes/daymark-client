@@ -1,17 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Merriweather } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { ThemeProvider } from "next-themes";
 import Header from "@/components/header";
 import RootLayoutClient from "@/components/root-layout-client";
 import "./globals.css";
 
-const _geist = Geist({ subsets: ["latin"] });
-const _geistMono = Geist_Mono({ subsets: ["latin"] });
+const _merriweather = Merriweather({ weight: ["300", "400", "700", "900"], subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Daymark - Test Your Knowledge With A Quiz",
-  description: "Take interactive quizzes and track your knowledge with Daymark",
+  title: "Daymark",
+  description: "Get 6 chances to guess today's news. Test your knowledge with Daymark.",
 };
 
 export default function RootLayout({

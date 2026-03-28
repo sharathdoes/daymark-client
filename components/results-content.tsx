@@ -81,27 +81,38 @@ export default function ResultsContent() {
   return (
     <div className="space-y-10">
       {/* Score summary */}
+      <div className="text-center space-y-4">
+        <div className="text-5xl md:text-6xl font-serif font-bold text-foreground">
+          {score}/{total}
+        </div>
+        <p className="text-lg md:text-xl font-serif text-foreground">
+          {label}
+        </p>
+        <p className="text-sm text-muted-foreground">
+          You answered {percentage}% of questions correctly.
+        </p>
+      </div>
 
-      <div className="flex flex-col sm:flex-row gap-3 justify-center">
+      <div className="flex flex-col sm:flex-row gap-3 justify-center border-t border-b border-border py-6">
         <Button
           type="button"
           onClick={handleTryAgain}
+          variant="outline"
           className="min-w-[150px]"
         >
-          Try again with same settings
+          Try again
         </Button>
         <Button
           type="button"
-          variant="secondary"
           onClick={handleShare}
-          className="min-w-[150px]"
+          className="min-w-[150px] bg-foreground text-background hover:bg-foreground/90"
         >
           {copied ? (
             <Check className="w-4 h-4 mr-2" />
           ) : (
             <LinkIcon className="w-4 h-4 mr-2" />
           )}
-          {copied ? "Copied!" : "Share Quiz"}
+          {copied ? "Copied!" : "Share"}
         </Button>
         <Button
           type="button"
@@ -109,25 +120,14 @@ export default function ResultsContent() {
           onClick={handleNewQuiz}
           className="min-w-[150px]"
         >
-          Start a new quiz
+          New quiz
         </Button>
       </div>
-      
-      <Card>
-        <CardHeader className="text-center space-y-3">
-          <CardTitle className="text-4xl md:text-5xl font-semibold">
-            {score} / {total}
-          </CardTitle>
-          <CardDescription className="text-sm md:text-base">
-            {label} — you answered {percentage}% of questions correctly.
-          </CardDescription>
-        </CardHeader>
-      </Card>
 
       {/* Question review */}
-      <section className="space-y-5">
+      <section className="space-y-6 border-t border-border pt-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-medium tracking-[0.18em] uppercase text-muted-foreground">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-foreground">
             Review
           </h2>
           <p className="text-xs text-muted-foreground">

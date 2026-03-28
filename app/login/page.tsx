@@ -103,98 +103,112 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4 py-10">
-      <div className="w-full max-w-sm">
-        <Card>
-          <CardHeader className="space-y-1 text-center">
-            <CardTitle className="text-2xl font-semibold tracking-tight">
-              Sign in to Daymark
-            </CardTitle>
-            <CardDescription className="text-xs">
-              Enter your credentials to continue where you left off.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {error && (
-              <div className="rounded-md border border-destructive/40 bg-destructive/5 px-3 py-2 text-xs text-destructive">
-                {error}
-              </div>
-            )}
+    <div className="min-h-[calc(100vh-56px)] flex items-center justify-center bg-background px-4 py-12">
+      <div className="w-full max-w-md">
+        <div className="space-y-8">
+          {/* Header */}
+          <div className="text-center space-y-2">
+            <h1 className="text-3xl md:text-4xl font-serif font-bold text-foreground">
+              Log in or create an account
+            </h1>
+          </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-muted-foreground" htmlFor="email">
-                  Email
-                </label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  required
-                  autoComplete="email"
-                />
-              </div>
+          {error && (
+            <div className="rounded-sm border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+              {error}
+            </div>
+          )}
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-muted-foreground" htmlFor="password">
-                  Password
-                </label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  required
-                  autoComplete="current-password"
-                />
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full mt-2"
-                disabled={isLoading}
-              >
-                {isLoading ? 'Signing in…' : 'Sign in'}
-              </Button>
-            </form>
-
-            <div className="relative my-2 text-center text-[10px] text-muted-foreground">
-              <span className="bg-background px-2 relative z-10">
-                Or continue with
-              </span>
-              <div className="absolute inset-x-0 top-1/2 -z-0 h-px bg-border" aria-hidden="true" />
+          {/* Email form */}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-foreground" htmlFor="email">
+                Email address
+              </label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder=""
+                required
+                autoComplete="email"
+                className="border-foreground rounded-sm"
+              />
             </div>
 
             <div className="space-y-2">
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full justify-center text-xs"
-                onClick={loginWithGoogle}
-              >
-                Continue with Google
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full justify-center text-xs"
-                onClick={loginWithGithub}
-              >
-                Continue with GitHub
-              </Button>
+              <label className="text-sm font-semibold text-foreground" htmlFor="password">
+                Password
+              </label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder=""
+                required
+                autoComplete="current-password"
+                className="border-foreground rounded-sm"
+              />
             </div>
 
-            <p className="pt-1 text-center text-xs text-muted-foreground">
-              Don&apos;t have an account?{' '}
-              <Link href="/signup" className="underline underline-offset-4">
-                Sign up
-              </Link>
-            </p>
-          </CardContent>
-        </Card>
+            <Button
+              type="submit"
+              className="w-full h-10 bg-foreground text-background font-semibold hover:bg-foreground/90"
+              disabled={isLoading}
+            >
+              {isLoading ? 'Continuing…' : 'Continue'}
+            </Button>
+          </form>
+
+          {/* Divider */}
+          <div className="relative text-center text-xs text-muted-foreground">
+            <span className="bg-background px-2 relative z-10">
+              or
+            </span>
+            <div className="absolute inset-x-0 top-1/2 -z-0 h-px bg-border" aria-hidden="true" />
+          </div>
+
+          {/* Social buttons */}
+          <div className="space-y-3">
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full justify-center h-10 font-semibold"
+              onClick={loginWithGoogle}
+            >
+              Continue with Google
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full justify-center h-10 font-semibold"
+              onClick={loginWithGithub}
+            >
+              Continue with GitHub
+            </Button>
+          </div>
+
+          {/* Legal text */}
+          <p className="text-center text-xs text-muted-foreground leading-relaxed">
+            By continuing, you agree to the{" "}
+            <a href="#" className="underline hover:no-underline">Terms of Service</a>
+            , {" "}
+            <a href="#" className="underline hover:no-underline">Privacy Policy</a>
+            {" "}and{" "}
+            <a href="#" className="underline hover:no-underline">Cookie Policy</a>
+            .
+          </p>
+
+          {/* Sign up link */}
+          <p className="text-center text-xs text-muted-foreground">
+            Don&apos;t have an account?{' '}
+            <Link href="/signup" className="font-semibold underline hover:no-underline">
+              Sign up
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   )

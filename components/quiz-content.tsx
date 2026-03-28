@@ -89,66 +89,64 @@ export default function QuizContent() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 max-w-2xl mx-auto">
       {/* Top Bar: Progress & Timer */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between text-[11px] font-medium tracking-[0.18em] uppercase text-muted-foreground">
+      <div className="space-y-3">
+        <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-muted-foreground">
           <span>
             Question {session.currentIndex + 1} of {session.quiz.questions.length}
           </span>
           {session.timerOption !== 'none' && (
-            <span className="flex items-center gap-1.5 text-foreground">
-              <Clock className="w-3.5 h-3.5" />
+            <span className="flex items-center gap-1.5 text-foreground font-semibold">
+              <Clock className="w-4 h-4" />
               {formatTime(session.timerSeconds)}
             </span>
           )}
         </div>
-        <Progress value={progress} />
+        <Progress value={progress} className="h-1" />
       </div>
 
-      {/* Question & options */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base md:text-lg leading-snug">
-            {currentQuestion.question}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2.5">
-            {currentQuestion.options.map((option, index) => {
-              const isSelected = index === selectedAnswer
+      {/* Question */}
+      <div className="space-y-4 border-t border-border pt-8">
+        <h2 className="text-lg md:text-xl font-serif font-bold leading-relaxed text-foreground">
+          {currentQuestion.question}
+        </h2>
 
-              return (
-                <button
-                  key={index}
-                  type="button"
-                  onClick={() => handleOptionClick(index)}
-                  className={`flex w-full items-start gap-3 rounded-md border px-3.5 py-3 text-left text-sm transition-colors cursor-pointer ${
-                    isSelected
-                      ? 'border-primary bg-primary/10 text-primary'
-                      : 'border-border bg-background hover:bg-accent/40'
-                  }`}
-                >
-                  <span className="mt-0.5 w-7 flex-shrink-0 text-xs font-mono font-semibold text-muted-foreground">
-                    {LETTER_LABELS[index]}
-                  </span>
-                  <span className="flex-1 text-sm md:text-[0.94rem] leading-relaxed">
-                    {option}
-                  </span>
-                </button>
-              )
-            })}
-          </div>
-        </CardContent>
-      </Card>
+        {/* Options */}
+        <div className="space-y-3">
+          {currentQuestion.options.map((option, index) => {
+            const isSelected = index === selectedAnswer
+
+            return (
+              <button
+                key={index}
+                type="button"
+                onClick={() => handleOptionClick(index)}
+                className={`flex w-full items-start gap-3 rounded-sm border px-4 py-3 text-left transition-colors cursor-pointer ${
+                  isSelected
+                    ? 'border-foreground bg-foreground text-background'
+                    : 'border-border bg-background hover:bg-muted'
+                }`}
+              >
+                <span className="mt-0.5 w-5 flex-shrink-0 text-xs font-semibold text-center">
+                  {LETTER_LABELS[index]}
+                </span>
+                <span className="flex-1 text-sm md:text-base leading-relaxed">
+                  {option}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+      </div>
 
       {/* Next button */}
-      <div className="flex justify-center">
+      <div className="flex justify-center pt-6">
         <Button
           type="button"
           onClick={handleNext}
           disabled={!isAnswered}
-          className="min-w-[180px]"
+          className="px-8 h-10 bg-foreground text-background font-semibold hover:bg-foreground/90"
         >
           {isLastQuestion && isAnswered
             ? 'See results'

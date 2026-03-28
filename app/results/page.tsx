@@ -24,9 +24,9 @@ export default function ResultsPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
+    <div className="min-h-[calc(100vh-56px)] flex flex-col bg-background text-foreground">
       <main className="flex-1">
-        <div className="max-w-4xl mx-auto px-4 py-10 md:py-12">
+        <div className="max-w-2xl mx-auto px-4 py-8 md:py-12">
           <ResultsContent />
         </div>
       </main>

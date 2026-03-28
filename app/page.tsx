@@ -9,16 +9,6 @@ import { Category, QuizSession } from '@/lib/types'
 import Header from '@/components/header'
 import LoadingOverlay from '@/components/loading-overlay'
 import { Button } from '@/components/ui/button'
-import { Highlighter } from '@/components/ui/highlighter'
-import { AnimatedShinyText } from '@/components/ui/animated-shiny-text'
-import { ArrowRightIcon } from '@radix-ui/react-icons'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
 
 const DIFFICULTIES = [
   { id: 'easy', label: 'Easy', description: 'Perfect for warming up' },
@@ -142,202 +132,175 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
+    <div className="min-h-[calc(100vh-56px)] flex flex-col bg-background text-foreground">
       {isGenerating && <LoadingOverlay />}
 
-      <main className="flex-1">
-        <div className="max-w-5xl mx-auto px-4 py-10 md:py-14">
-          {/* Hero */}
-          <section className="mb-10 md:mb-12 text-center">
-            <Link href="/daily" className="mb-4 inline-block">
-              <div className="group rounded-full border border-black/5 bg-neutral-100 text-base text-white transition-all ease-in hover:cursor-pointer hover:bg-neutral-200 dark:border-white/5 dark:bg-neutral-900 dark:hover:bg-neutral-800">
-                <AnimatedShinyText className="inline-flex items-center justify-center px-4 py-1 transition ease-out hover:text-neutral-600 hover:duration-300 hover:dark:text-neutral-400">
-                  <span>✨ Quiz of the Day</span>
-                  <ArrowRightIcon className="ml-1 size-3 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
-                </AnimatedShinyText>
-              </div>
-            </Link>
-
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight text-balance mb-3">
-              You read the news{" "}
-              <Highlighter action="underline" color="#FF9800" animationDuration={800}>
-                today
-              </Highlighter>
-              ?{" "}<br />
-              Let&apos;s see how much stuck in.
-            </h1>
-            <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto">
-              Every question is pulled from a real article published today. No
-              trivia, no recycled facts — just{" "}
-              <Highlighter action="highlight" color="#FF980033" animationDuration={1000}>
-                today&apos;s news
-              </Highlighter>
-              {" "}and{" "}
-              <Highlighter action="underline" color="#6366f1" animationDuration={1200}>
-                how well you followed it
-              </Highlighter>
-              .
-            </p>
-          </section>
-
+      <main className="flex-1 flex items-center justify-center">
+        <div className="w-full max-w-2xl px-4 py-12">
           {error && (
-            <div className="mb-6">
-              <Card className="bg-destructive/5 border-destructive/30 text-destructive">
-                <CardContent className="py-3 text-sm">{error}</CardContent>
-              </Card>
+            <div className="mb-8 rounded-sm border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+              {error}
             </div>
           )}
 
-
           {isLoading ? (
-            <div className="flex justify-center py-16">
+            <div className="flex justify-center py-20">
               <p className="text-sm text-muted-foreground">
                 Loading categories…
               </p>
             </div>
           ) : (
-            <div className="grid gap-6 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] items-start">
-              {/* Categories */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Select categories</CardTitle>
-                  <CardDescription>
-                    Choose the topics you&apos;d like today&apos;s quiz to focus
-                    on.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-2.5">
+            <div className="space-y-10">
+              {/* Hero Section */}
+              <div className="text-center space-y-6">
+                {/* Grid Icon */}
+                <div className="flex justify-center">
+                  <div className="inline-flex items-center justify-center w-20 h-20 border-2 border-foreground rounded">
+                    <svg className="w-16 h-16" viewBox="0 0 100 100" fill="none">
+                      {/* 3x3 grid */}
+                      <rect x="10" y="10" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" />
+                      <rect x="30" y="10" width="15" height="15" fill="#c8b458" stroke="currentColor" strokeWidth="2" />
+                      <rect x="50" y="10" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" />
+                      
+                      <rect x="10" y="30" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" />
+                      <rect x="30" y="30" width="15" height="15" fill="#6ca965" stroke="currentColor" strokeWidth="2" />
+                      <rect x="50" y="30" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" />
+                      
+                      <rect x="10" y="50" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" />
+                      <rect x="30" y="50" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" />
+                      <rect x="50" y="50" width="15" height="15" fill="#6ca965" stroke="currentColor" strokeWidth="2" />
+                    </svg>
+                  </div>
+                </div>
+
+                <h1 className="text-4xl md:text-5xl font-serif font-bold text-foreground">
+                  Daymark
+                </h1>
+
+                <p className="text-lg md:text-xl font-serif text-foreground max-w-md mx-auto">
+                  Get 6 chances to guess
+                  <br />
+                  a 5-letter word.
+                </p>
+              </div>
+
+              {/* Quiz Configuration */}
+              <div className="space-y-8 border-t border-border pt-10">
+                {/* Categories */}
+                <div className="space-y-3">
+                  <p className="text-xs font-semibold text-foreground uppercase tracking-wide">Select categories</p>
+                  <div className="flex flex-wrap gap-2">
                     {categories.map((category) => {
-                      const selected = selectedCategoryIds.includes(
-                        category.id,
-                      );
+                      const selected = selectedCategoryIds.includes(category.id);
                       return (
                         <Button
                           key={category.id}
                           type="button"
                           variant={selected ? "default" : "outline"}
                           size="sm"
-                          className="justify-start truncate"
                           onClick={() => toggleCategory(category.id)}
+                          className="text-xs"
                         >
                           {category.name}
                         </Button>
                       );
                     })}
                   </div>
+                </div>
 
-                  <div className=" flex gap-4 mt-6 space-y-4">
-                    <div>
-                      <p className="mb-1.5 text-xs font-medium text-muted-foreground">
-                        Number of questions
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {QUESTION_COUNTS.map((count) => (
-                          <Button
-                            key={count}
-                            type="button"
-                            size="sm"
-                            variant={
-                              questionCount === count ? "default" : "outline"
-                            }
-                            onClick={() => setQuestionCount(count)}
-                          >
-                            {count}
-                          </Button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <p className="mb-1.5 text-xs font-medium text-muted-foreground">
-                        Timer (optional)
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {TIMER_OPTIONS.map((option) => (
-                          <Button
-                            key={option.id}
-                            type="button"
-                            size="sm"
-                            variant={
-                              timerOption === option.id ? "default" : "outline"
-                            }
-                            onClick={() => setTimerOption(option.id)}
-                          >
-                            {option.label}
-                          </Button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Difficulty */}
-              <Card className="h-full">
-                <CardHeader>
-                  <CardTitle>Choose difficulty</CardTitle>
-                  <CardDescription>
-                    Adjust how challenging the questions should be.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {DIFFICULTIES.map((difficulty) => {
-                    const active = selectedDifficulty === difficulty.id;
-                    return (
-                      <button
-                        key={difficulty.id}
+                {/* Number of Questions */}
+                <div className="space-y-3">
+                  <p className="text-xs font-semibold text-foreground uppercase tracking-wide">Number of questions</p>
+                  <div className="flex gap-2">
+                    {QUESTION_COUNTS.map((count) => (
+                      <Button
+                        key={count}
                         type="button"
-                        onClick={() => setSelectedDifficulty(difficulty.id)}
-                        className={`w-full rounded-md border px-4 py-3 text-left text-sm transition-colors ${
-                          active
-                            ? "border-primary bg-primary/5"
-                            : "border-border bg-background hover:bg-accent/40"
-                        }`}
+                        size="sm"
+                        variant={questionCount === count ? "default" : "outline"}
+                        onClick={() => setQuestionCount(count)}
+                        className="text-xs"
                       >
-                        <div className="font-medium mb-0.5">
-                          {difficulty.label}
-                        </div>
-                        <p className="text-xs text-muted-foreground">
-                          {difficulty.description}
-                        </p>
-                      </button>
-                    );
-                  })}
-                </CardContent>
-              </Card>
+                        {count}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Timer */}
+                <div className="space-y-3">
+                  <p className="text-xs font-semibold text-foreground uppercase tracking-wide">Timer</p>
+                  <div className="flex gap-2">
+                    {TIMER_OPTIONS.map((option) => (
+                      <Button
+                        key={option.id}
+                        type="button"
+                        size="sm"
+                        variant={timerOption === option.id ? "default" : "outline"}
+                        onClick={() => setTimerOption(option.id)}
+                        className="text-xs"
+                      >
+                        {option.label}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Difficulty */}
+                <div className="space-y-3">
+                  <p className="text-xs font-semibold text-foreground uppercase tracking-wide">Difficulty</p>
+                  <div className="space-y-2">
+                    {DIFFICULTIES.map((difficulty) => {
+                      const active = selectedDifficulty === difficulty.id;
+                      return (
+                        <button
+                          key={difficulty.id}
+                          type="button"
+                          onClick={() => setSelectedDifficulty(difficulty.id)}
+                          className={`w-full rounded-sm border px-3 py-2 text-left text-sm transition-colors ${
+                            active
+                              ? "border-foreground bg-foreground text-background"
+                              : "border-border bg-background hover:bg-muted"
+                          }`}
+                        >
+                          <div className="font-semibold text-sm">{difficulty.label}</div>
+                          <p className="text-xs opacity-70">{difficulty.description}</p>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* CTA */}
+              <div className="text-center space-y-4 border-t border-border pt-10">
+                <Button
+                  type="button"
+                  onClick={handleStart}
+                  disabled={!canStart || isGenerating}
+                  className="w-full h-11 bg-foreground text-background font-semibold hover:bg-foreground/90"
+                >
+                  {isGenerating ? "Preparing your quiz…" : "Play"}
+                </Button>
+
+                {!isAuthenticated && (
+                  <p className="text-xs text-muted-foreground">
+                    <Link href="/login" className="font-semibold underline hover:no-underline">
+                      Sign in
+                    </Link>
+                    {" "}to save your streaks and past quizzes.
+                  </p>
+                )}
+              </div>
+
+              {/* Footer */}
+              <div className="text-center space-y-1 text-xs text-muted-foreground border-t border-border pt-10">
+                <p>Today&apos;s Daymark</p>
+                <p className="font-semibold text-foreground">No. 1</p>
+                <p className="text-xs">News Quiz</p>
+              </div>
             </div>
           )}
-
-          {/* Primary CTA */}
-          <section className="mt-10 flex flex-col items-center gap-4 text-center">
-            <div className="space-y-1">
-              <p className="text-sm md:text-base text-muted-foreground max-w-md">
-                {selectedCategoryIds.length === 0
-                  ? "Choose a few topics and a difficulty to begin."
-                  : `You\'re set for a ${selectedDifficulty ?? "news"} quiz across ${selectedCategoryIds.length} topic${selectedCategoryIds.length > 1 ? "s" : ""}.`}
-              </p>
-            </div>
-
-            <Button
-              type="button"
-              size="lg"
-              onClick={handleStart}
-              disabled={!canStart || isGenerating}
-              className="min-w-[200px] shadow-sm"
-            >
-              {isGenerating ? "Preparing your quiz…" : "Start today's quiz"}
-            </Button>
-
-            {!isAuthenticated && (
-              <p className="text-xs md:text-sm text-muted-foreground">
-                <Link href="/login" className="underline underline-offset-4">
-                  Sign in
-                </Link>{" "}
-                to save your streaks and past quizzes.
-              </p>
-            )}
-          </section>
         </div>
       </main>
     </div>
