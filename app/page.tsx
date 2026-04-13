@@ -44,16 +44,29 @@ export default function HomePage() {
         const data = await getCategories()
         setCategories(data)
         
-        // Check for query params from results page
+        // Restore from URL params (results page retry) or localStorage (back from sign-in)
         const categoriesParam = searchParams.get('categories')
         const difficultyParam = searchParams.get('difficulty')
-        
+        const countParam = searchParams.get('count')
+        const timerParam = searchParams.get('timer')
+
         if (categoriesParam) {
-          const ids = categoriesParam.split(',').map(Number)
-          setSelectedCategoryIds(ids)
-        }
-        if (difficultyParam) {
-          setSelectedDifficulty(difficultyParam)
+          setSelectedCategoryIds(categoriesParam.split(',').map(Number))
+          if (difficultyParam) setSelectedDifficulty(difficultyParam)
+          if (countParam) setQuestionCount(Number(countParam))
+          if (timerParam) setTimerOption(timerParam)
+        } else {
+          // No URL params — check localStorage saved before sign-in redirect
+          try {
+            const pending = localStorage.getItem('pendingQuiz')
+            if (pending) {
+              const p = JSON.parse(pending)
+              if (p.categories?.length) setSelectedCategoryIds(p.categories)
+              if (p.difficulty) setSelectedDifficulty(p.difficulty)
+              if (p.count) setQuestionCount(p.count)
+              if (p.timer) setTimerOption(p.timer)
+            }
+          } catch { /* ignore parse errors */ }
         }
       } catch (err) {
         setError('Failed to load categories')

@@ -8,12 +8,12 @@ export default function RootLayoutClient({
 }: {
   children: React.ReactNode
 }) {
-  const [isDark, setIsDark] = useState(true)
+  const [isDark, setIsDark] = useState(false)
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
-    const theme = localStorage.getItem('daymark_theme') || 'dark'
+    const theme = localStorage.getItem('daymark_theme') || 'light'
     setIsDark(theme === 'dark')
     updateTheme(theme === 'dark')
   }, [])
