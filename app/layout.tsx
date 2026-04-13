@@ -1,17 +1,32 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { IBM_Plex_Sans, IBM_Plex_Mono, DM_Serif_Display } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { ThemeProvider } from "next-themes";
 import Header from "@/components/header";
 import RootLayoutClient from "@/components/root-layout-client";
 import "./globals.css";
 
-const _geist = Geist({ subsets: ["latin"] });
-const _geistMono = Geist_Mono({ subsets: ["latin"] });
+const ibmPlexSans = IBM_Plex_Sans({
+  weight: ["300", "400", "500", "600"],
+  subsets: ["latin"],
+  variable: "--font-ibm-plex-sans",
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  weight: ["400", "500", "600"],
+  subsets: ["latin"],
+  variable: "--font-ibm-plex-mono",
+});
+
+const dmSerifDisplay = DM_Serif_Display({
+  weight: ["400"],
+  subsets: ["latin"],
+  variable: "--font-dm-serif-display",
+});
 
 export const metadata: Metadata = {
-  title: "Daymark - Test Your Knowledge With A Quiz",
-  description: "Take interactive quizzes and track your knowledge with Daymark",
+  title: "Daymark — Daily News Quiz",
+  description: "Quiz yourself on today's headlines. Every question pulled from a real article published in the last 24 hours.",
 };
 
 export default function RootLayout({
@@ -21,7 +36,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="font-sans antialiased">
+      <body className={`${ibmPlexSans.variable} ${ibmPlexMono.variable} ${dmSerifDisplay.variable} font-sans antialiased`}>
         <RootLayoutClient>
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
             <Header />

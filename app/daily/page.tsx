@@ -6,15 +6,6 @@ import Link from 'next/link'
 import { getDailyQuiz } from '@/lib/api'
 import { useAuth, useQuiz } from '@/lib/store'
 import { Quiz, QuizSession } from '@/lib/types'
-import Header from '@/components/header'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 
 export default function DailyQuizPage() {
   const router = useRouter()
@@ -26,12 +17,6 @@ export default function DailyQuizPage() {
   const [error, setError] = useState('')
   const [isStarting, setIsStarting] = useState(false)
 
-  const today = new Date().toLocaleDateString('en-IN', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  })
 
   useEffect(() => {
     const load = async () => {
@@ -70,104 +55,108 @@ export default function DailyQuizPage() {
     router.push('/quiz')
   }
 
+  const todayFormatted = new Date().toLocaleDateString('en-US', {
+    weekday: 'long', month: 'long', day: 'numeric', year: 'numeric',
+  }).toUpperCase()
+
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
-
       <main className="flex-1">
-        <div className="max-w-2xl mx-auto px-4 py-12 md:py-16">
-          {/* Header */}
-          <section className="mb-10 text-center">
-            <p className="text-xs font-medium tracking-[0.2em] text-muted-foreground uppercase mb-3">
-              {today}
-            </p>
-            <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-balance mb-3">
-              Quiz of the Day
-            </h1>
-            <p className="text-sm md:text-base text-muted-foreground max-w-md mx-auto">
-              One quiz, every day at 6 AM — pulled from real articles across all categories.
-              No setup needed. Just start.
-            </p>
+        <div className="max-w-2xl mx-auto px-4 py-10 md:py-14">
+
+          {/* Masthead */}
+          <section className="animate-slide-up mb-10" style={{ animationDelay: '0ms' }}>
+            <div className="flex items-center gap-3 mb-4">
+              <span className="flex items-center gap-2 font-mono text-[10px] tracking-[0.18em] bg-primary text-primary-foreground px-3 py-1">
+                <span className="pulse-amber w-1.5 h-1.5 rounded-full bg-primary-foreground inline-block" />
+                BREAKING
+              </span>
+              <span className="font-mono text-[10px] tracking-[0.18em] text-muted-foreground">{todayFormatted}</span>
+            </div>
+            <div className="border-t-2 border-foreground pt-4">
+              <h1 className="font-display text-4xl md:text-5xl leading-tight text-foreground mb-3">
+                Today&apos;s<br />Quiz of the Day
+              </h1>
+              <p className="text-sm text-muted-foreground border-l-2 border-border pl-4 leading-relaxed">
+                One quiz every day at 6 AM, pulled from real articles across all categories.
+                Everyone plays the same questions. No setup needed.
+              </p>
+            </div>
           </section>
 
           {/* Content */}
           {isLoading ? (
-            <div className="flex justify-center py-16">
-              <p className="text-sm text-muted-foreground animate-pulse">Loading today&apos;s quiz…</p>
+            <div className="font-mono text-xs tracking-widest text-muted-foreground animate-pulse animate-slide-up py-8">
+              LOADING TODAY&apos;S QUIZ...
             </div>
           ) : error ? (
-            <Card className="bg-destructive/5 border-destructive/30">
-              <CardContent className="py-4 text-sm text-destructive text-center">{error}</CardContent>
-            </Card>
+            <div className="animate-slide-up border-l-2 border-destructive bg-destructive/5 px-4 py-3 font-mono text-xs text-destructive">
+              {error}
+            </div>
           ) : quiz === null ? (
-            <Card>
-              <CardContent className="py-12 text-center space-y-3">
-                <div className="text-4xl mb-2">⏳</div>
-                <p className="font-medium">No quiz yet for today.</p>
-                <p className="text-sm text-muted-foreground">
-                  Today&apos;s quiz is generated every day at <strong>6:00 AM IST</strong>.<br />
-                  Check back soon!
-                </p>
-                <div className="pt-2">
-                  <Button variant="outline" asChild>
-                    <Link href="/">Build your own quiz instead</Link>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+            <div className="animate-slide-up border border-border p-8 text-center space-y-4">
+              <p className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground">NOT YET AVAILABLE</p>
+              <p className="font-display text-2xl text-foreground">No quiz for today — yet.</p>
+              <p className="text-sm text-muted-foreground">
+                Today&apos;s quiz is generated every day at <strong className="text-foreground">6:00 AM IST</strong>. Check back soon.
+              </p>
+              <Link
+                href="/"
+                className="inline-block font-mono text-[11px] tracking-[0.14em] border border-border px-5 py-2.5 text-muted-foreground hover:border-foreground/40 hover:text-foreground transition-colors mt-2"
+              >
+                BUILD YOUR OWN QUIZ →
+              </Link>
+            </div>
           ) : (
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between flex-wrap gap-2">
+            <div className="animate-slide-up space-y-6" style={{ animationDelay: '80ms' }}>
+              {/* Quiz card */}
+              <div className="border border-border">
+                <div className="border-b border-border px-5 py-3 flex items-center justify-between">
                   <div>
-                    <CardTitle className="text-lg">{quiz.title}</CardTitle>
-                    <CardDescription className="mt-0.5">
-                      {quiz.questions.length} questions · {quiz.difficulty} difficulty
-                    </CardDescription>
+                    <h2 className="text-sm font-medium text-foreground">{quiz.title}</h2>
+                    <p className="font-mono text-[10px] tracking-wide text-muted-foreground mt-0.5">
+                      {quiz.questions.length} QUESTIONS · {quiz.difficulty.toUpperCase()}
+                    </p>
                   </div>
-                  <span className="text-xs font-medium bg-primary/10 text-primary border border-primary/20 rounded-full px-3 py-1">
-                    Daily Special
+                  <span className="font-mono text-[10px] tracking-[0.16em] border border-primary/40 text-primary px-2.5 py-1">
+                    DAILY
                   </span>
                 </div>
-              </CardHeader>
 
-              <CardContent className="space-y-6">
-                {/* Stats row */}
-                <div className="grid grid-cols-3 gap-3 text-center">
+                {/* Stats */}
+                <div className="grid grid-cols-3 divide-x divide-border border-b border-border">
                   {[
-                    { label: 'Questions', value: quiz.questions.length },
-                    { label: 'Difficulty', value: quiz.difficulty.charAt(0).toUpperCase() + quiz.difficulty.slice(1) },
-                    { label: 'Categories', value: quiz.category_ids?.length ?? '—' },
+                    { label: 'QUESTIONS', value: quiz.questions.length },
+                    { label: 'DIFFICULTY', value: quiz.difficulty.toUpperCase() },
+                    { label: 'CATEGORIES', value: quiz.category_ids?.length ?? '—' },
                   ].map((stat) => (
-                    <div
-                      key={stat.label}
-                      className="rounded-lg border border-border bg-muted/40 px-3 py-4"
-                    >
-                      <p className="text-xl font-semibold">{stat.value}</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">{stat.label}</p>
+                    <div key={stat.label} className="px-5 py-4 text-center">
+                      <p className="font-display text-3xl text-foreground">{stat.value}</p>
+                      <p className="font-mono text-[10px] tracking-[0.16em] text-muted-foreground mt-1">{stat.label}</p>
                     </div>
                   ))}
                 </div>
 
                 {/* CTA */}
-                <div className="flex flex-col items-center gap-3 pt-2">
-                  <Button
-                    size="lg"
-                    className="w-full max-w-xs shadow-sm"
-                    onClick={handleStart}
-                    disabled={isStarting}
-                  >
-                    {isStarting ? 'Starting…' : "Start Today's Quiz →"}
-                  </Button>
-
+                <div className="px-5 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                   {!isAuthenticated && (
-                    <p className="text-xs text-muted-foreground text-center">
-                      <Link href="/login" className="underline underline-offset-4">Sign in</Link>{' '}
-                      to track your daily streak and results.
+                    <p className="font-mono text-[10px] text-muted-foreground">
+                      <Link href="/login" className="text-primary hover:underline underline-offset-4">SIGN IN</Link>
+                      {' '}to track streaks and results.
                     </p>
                   )}
+                  {isAuthenticated && <div />}
+                  <button
+                    type="button"
+                    onClick={handleStart}
+                    disabled={isStarting}
+                    className="font-mono text-[11px] tracking-[0.18em] px-6 py-3 border border-primary bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-60"
+                  >
+                    {isStarting ? 'STARTING...' : "START TODAY'S QUIZ →"}
+                  </button>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           )}
         </div>
       </main>

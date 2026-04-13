@@ -6,9 +6,6 @@ import Link from 'next/link'
 import { useAuth, useQuiz } from '@/lib/store'
 import { signIn, loginWithGoogle, loginWithGithub, generateQuiz, getToken } from '@/lib/api'
 import type { QuizSession } from '@/lib/types'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -104,97 +101,95 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4 py-10">
-      <div className="w-full max-w-sm">
-        <Card>
-          <CardHeader className="space-y-1 text-center">
-            <CardTitle className="text-2xl font-semibold tracking-tight">
-              Sign in to Daymark
-            </CardTitle>
-            <CardDescription className="text-xs">
-              Enter your credentials to continue where you left off.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {error && (
-              <div className="rounded-md border border-destructive/40 bg-destructive/5 px-3 py-2 text-xs text-destructive">
-                {error}
-              </div>
-            )}
+      <div className="w-full max-w-sm animate-slide-up">
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-muted-foreground" htmlFor="email">
-                  Email
-                </label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  required
-                  autoComplete="email"
-                />
-              </div>
+        {/* Header */}
+        <div className="mb-7 border-t-2 border-foreground pt-4">
+          <div className="flex items-center gap-2.5 mb-1">
+            <span className="w-0.5 h-5 bg-primary block" />
+            <span className="font-mono text-[10px] tracking-[0.22em] text-primary">DAYMARK</span>
+          </div>
+          <h1 className="font-display text-3xl text-foreground">Sign in</h1>
+          <p className="font-mono text-[11px] text-muted-foreground mt-1 tracking-wide">
+            Continue where you left off.
+          </p>
+        </div>
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-muted-foreground" htmlFor="password">
-                  Password
-                </label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  required
-                  autoComplete="current-password"
-                />
-              </div>
+        {error && (
+          <div className="mb-5 border-l-2 border-destructive bg-destructive/5 px-4 py-2.5 font-mono text-[11px] text-destructive">
+            {error}
+          </div>
+        )}
 
-              <Button
-                type="submit"
-                className="w-full mt-2"
-                disabled={isLoading}
-              >
-                {isLoading ? 'Signing in…' : 'Sign in'}
-              </Button>
-            </form>
+        <form onSubmit={handleSubmit} className="space-y-4 mb-6">
+          <div className="space-y-1">
+            <label className="font-mono text-[10px] tracking-[0.18em] text-muted-foreground" htmlFor="email">
+              EMAIL
+            </label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              required
+              autoComplete="email"
+              className="w-full bg-background border border-border px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none transition-colors font-mono"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="font-mono text-[10px] tracking-[0.18em] text-muted-foreground" htmlFor="password">
+              PASSWORD
+            </label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              required
+              autoComplete="current-password"
+              className="w-full bg-background border border-border px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none transition-colors font-mono"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full font-mono text-[11px] tracking-[0.18em] px-4 py-3 border border-primary bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-60 mt-1"
+          >
+            {isLoading ? 'SIGNING IN...' : 'SIGN IN →'}
+          </button>
+        </form>
 
-            <div className="relative my-2 text-center text-[10px] text-muted-foreground">
-              <span className="bg-background px-2 relative z-10">
-                Or continue with
-              </span>
-              <div className="absolute inset-x-0 top-1/2 -z-0 h-px bg-border" aria-hidden="true" />
-            </div>
+        <div className="flex items-center gap-3 mb-5">
+          <div className="flex-1 h-px bg-border" />
+          <span className="font-mono text-[10px] text-muted-foreground tracking-widest">OR</span>
+          <div className="flex-1 h-px bg-border" />
+        </div>
 
-            <div className="space-y-2">
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full justify-center text-xs"
-                onClick={loginWithGoogle}
-              >
-                Continue with Google
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full justify-center text-xs"
-                onClick={loginWithGithub}
-              >
-                Continue with GitHub
-              </Button>
-            </div>
+        <div className="space-y-2 mb-6">
+          <button
+            type="button"
+            onClick={loginWithGoogle}
+            className="w-full font-mono text-[11px] tracking-[0.14em] px-4 py-3 border border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground transition-colors"
+          >
+            CONTINUE WITH GOOGLE
+          </button>
+          <button
+            type="button"
+            onClick={loginWithGithub}
+            className="w-full font-mono text-[11px] tracking-[0.14em] px-4 py-3 border border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground transition-colors"
+          >
+            CONTINUE WITH GITHUB
+          </button>
+        </div>
 
-            <p className="pt-1 text-center text-xs text-muted-foreground">
-              Don&apos;t have an account?{' '}
-              <Link href="/signup" className="underline underline-offset-4">
-                Sign up
-              </Link>
-            </p>
-          </CardContent>
-        </Card>
+        <p className="font-mono text-[10px] text-muted-foreground text-center tracking-wide">
+          NO ACCOUNT?{' '}
+          <Link href="/signup" className="text-primary hover:underline underline-offset-4">
+            SIGN UP
+          </Link>
+        </p>
       </div>
     </div>
   )

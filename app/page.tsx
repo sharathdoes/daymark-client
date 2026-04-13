@@ -6,19 +6,7 @@ import Link from 'next/link'
 import { useAuth, useQuiz } from '@/lib/store'
 import { getCategories, generateQuiz } from '@/lib/api'
 import { Category, QuizSession } from '@/lib/types'
-import Header from '@/components/header'
 import LoadingOverlay from '@/components/loading-overlay'
-import { Button } from '@/components/ui/button'
-import { Highlighter } from '@/components/ui/highlighter'
-import { AnimatedShinyText } from '@/components/ui/animated-shiny-text'
-import { ArrowRightIcon } from '@radix-ui/react-icons'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
 
 const DIFFICULTIES = [
   { id: 'easy', label: 'Easy', description: 'Perfect for warming up' },
@@ -141,205 +129,200 @@ export default function HomePage() {
     }
   }
 
+  const today = new Date().toLocaleDateString('en-US', {
+    weekday: 'long', month: 'long', day: 'numeric', year: 'numeric',
+  }).toUpperCase()
+
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       {isGenerating && <LoadingOverlay />}
 
       <main className="flex-1">
-        <div className="max-w-5xl mx-auto px-4 py-10 md:py-14">
-          {/* Hero */}
-          <section className="mb-10 md:mb-12 text-center">
-            <Link href="/daily" className="mb-4 inline-block">
-              <div className="group rounded-full border border-black/5 bg-neutral-100 text-base text-white transition-all ease-in hover:cursor-pointer hover:bg-neutral-200 dark:border-white/5 dark:bg-neutral-900 dark:hover:bg-neutral-800">
-                <AnimatedShinyText className="inline-flex items-center justify-center px-4 py-1 transition ease-out hover:text-neutral-600 hover:duration-300 hover:dark:text-neutral-400">
-                  <span>✨ Quiz of the Day</span>
-                  <ArrowRightIcon className="ml-1 size-3 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
-                </AnimatedShinyText>
-              </div>
-            </Link>
+        <div className="max-w-3xl mx-auto px-4 py-10 md:py-14">
 
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight text-balance mb-3">
-              You read the news{" "}
-              <Highlighter action="underline" color="#FF9800" animationDuration={800}>
-                today
-              </Highlighter>
-              ?{" "}<br />
-              Let&apos;s see how much stuck in.
-            </h1>
-            <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto">
-              Every question is pulled from a real article published today. No
-              trivia, no recycled facts — just{" "}
-              <Highlighter action="highlight" color="#FF980033" animationDuration={1000}>
-                today&apos;s news
-              </Highlighter>
-              {" "}and{" "}
-              <Highlighter action="underline" color="#6366f1" animationDuration={1200}>
-                how well you followed it
-              </Highlighter>
-              .
+          {/* Masthead */}
+          <section className="animate-slide-up mb-10" style={{ animationDelay: '0ms' }}>
+            <div className="flex items-center justify-between mb-5">
+              <span className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground">{today}</span>
+              <Link
+                href="/daily"
+                className="flex items-center gap-2 font-mono text-[10px] tracking-[0.16em] text-primary border border-primary/30 px-3 py-1 hover:bg-primary/5 transition-colors"
+              >
+                <span className="pulse-amber w-1.5 h-1.5 rounded-full bg-primary inline-block" />
+                DAILY CHALLENGE
+              </Link>
+            </div>
+
+            <div className="border-t border-foreground/60 pt-5 mb-4">
+              <h1 className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.08] text-foreground mb-4">
+                You read the news today?<br />
+                <span className="text-primary italic">Let&apos;s see.</span>
+              </h1>
+            </div>
+            <p className="text-sm text-muted-foreground max-w-lg leading-relaxed border-l-2 border-border pl-4">
+              Every question is pulled from a real article published today.
+              No trivia, no recycled facts — just today&apos;s headlines and how well you followed them.
             </p>
           </section>
 
           {error && (
-            <div className="mb-6">
-              <Card className="bg-destructive/5 border-destructive/30 text-destructive">
-                <CardContent className="py-3 text-sm">{error}</CardContent>
-              </Card>
+            <div className="mb-6 animate-slide-up border-l-2 border-destructive bg-destructive/5 px-4 py-3 font-mono text-xs text-destructive">
+              {error}
             </div>
           )}
-
 
           {isLoading ? (
-            <div className="flex justify-center py-16">
-              <p className="text-sm text-muted-foreground">
-                Loading categories…
-              </p>
+            <div className="py-16 font-mono text-xs text-muted-foreground tracking-widest animate-pulse">
+              LOADING CATEGORIES...
             </div>
           ) : (
-            <div className="grid gap-6 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] items-start">
-              {/* Categories */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Select categories</CardTitle>
-                  <CardDescription>
-                    Choose the topics you&apos;d like today&apos;s quiz to focus
-                    on.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-2.5">
-                    {categories.map((category) => {
-                      const selected = selectedCategoryIds.includes(
-                        category.id,
-                      );
-                      return (
-                        <Button
-                          key={category.id}
-                          type="button"
-                          variant={selected ? "default" : "outline"}
-                          size="sm"
-                          className="justify-start truncate"
-                          onClick={() => toggleCategory(category.id)}
-                        >
-                          {category.name}
-                        </Button>
-                      );
-                    })}
-                  </div>
+            <div className="space-y-8">
 
-                  <div className=" flex gap-4 mt-6 space-y-4">
-                    <div>
-                      <p className="mb-1.5 text-xs font-medium text-muted-foreground">
-                        Number of questions
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {QUESTION_COUNTS.map((count) => (
-                          <Button
-                            key={count}
-                            type="button"
-                            size="sm"
-                            variant={
-                              questionCount === count ? "default" : "outline"
-                            }
-                            onClick={() => setQuestionCount(count)}
-                          >
-                            {count}
-                          </Button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <p className="mb-1.5 text-xs font-medium text-muted-foreground">
-                        Timer (optional)
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {TIMER_OPTIONS.map((option) => (
-                          <Button
-                            key={option.id}
-                            type="button"
-                            size="sm"
-                            variant={
-                              timerOption === option.id ? "default" : "outline"
-                            }
-                            onClick={() => setTimerOption(option.id)}
-                          >
-                            {option.label}
-                          </Button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Difficulty */}
-              <Card className="h-full">
-                <CardHeader>
-                  <CardTitle>Choose difficulty</CardTitle>
-                  <CardDescription>
-                    Adjust how challenging the questions should be.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {DIFFICULTIES.map((difficulty) => {
-                    const active = selectedDifficulty === difficulty.id;
+              {/* Topics */}
+              <section className="animate-slide-up" style={{ animationDelay: '80ms' }}>
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground">SELECT TOPICS</span>
+                  <div className="flex-1 h-px bg-border" />
+                  {selectedCategoryIds.length > 0 && (
+                    <span className="font-mono text-[10px] text-primary tracking-wide">
+                      {selectedCategoryIds.length} SELECTED
+                    </span>
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {categories.map((category) => {
+                    const selected = selectedCategoryIds.includes(category.id)
                     return (
                       <button
-                        key={difficulty.id}
+                        key={category.id}
                         type="button"
-                        onClick={() => setSelectedDifficulty(difficulty.id)}
-                        className={`w-full rounded-md border px-4 py-3 text-left text-sm transition-colors ${
-                          active
-                            ? "border-primary bg-primary/5"
-                            : "border-border bg-background hover:bg-accent/40"
+                        onClick={() => toggleCategory(category.id)}
+                        className={`font-mono text-[11px] tracking-[0.14em] px-3 py-1.5 border transition-all duration-150 ${
+                          selected
+                            ? 'border-primary bg-primary text-primary-foreground'
+                            : 'border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground'
                         }`}
                       >
-                        <div className="font-medium mb-0.5">
-                          {difficulty.label}
-                        </div>
-                        <p className="text-xs text-muted-foreground">
-                          {difficulty.description}
-                        </p>
+                        {category.name.toUpperCase()}
                       </button>
-                    );
+                    )
                   })}
-                </CardContent>
-              </Card>
+                </div>
+              </section>
+
+              {/* Controls row */}
+              <section className="animate-slide-up" style={{ animationDelay: '160ms' }}>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 border border-border p-5">
+
+                  {/* Difficulty */}
+                  <div>
+                    <p className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground mb-3">DIFFICULTY</p>
+                    <div className="flex flex-col gap-1.5">
+                      {DIFFICULTIES.map((d) => (
+                        <button
+                          key={d.id}
+                          type="button"
+                          onClick={() => setSelectedDifficulty(d.id)}
+                          className={`flex items-center gap-2.5 px-3 py-2 border text-left transition-all duration-150 ${
+                            selectedDifficulty === d.id
+                              ? 'border-primary bg-primary/8 text-foreground'
+                              : 'border-border hover:border-foreground/30'
+                          }`}
+                        >
+                          <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${
+                            selectedDifficulty === d.id ? 'bg-primary' : 'bg-border'
+                          }`} />
+                          <div>
+                            <div className="font-mono text-[11px] tracking-wide">{d.label.toUpperCase()}</div>
+                            <div className="text-[10px] text-muted-foreground">{d.description}</div>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Questions */}
+                  <div>
+                    <p className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground mb-3">QUESTIONS</p>
+                    <div className="flex flex-col gap-1.5">
+                      {QUESTION_COUNTS.map((count) => (
+                        <button
+                          key={count}
+                          type="button"
+                          onClick={() => setQuestionCount(count)}
+                          className={`flex items-center gap-2.5 px-3 py-2 border text-left transition-all duration-150 ${
+                            questionCount === count
+                              ? 'border-primary bg-primary/8 text-foreground'
+                              : 'border-border hover:border-foreground/30'
+                          }`}
+                        >
+                          <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${
+                            questionCount === count ? 'bg-primary' : 'bg-border'
+                          }`} />
+                          <span className="font-mono text-[11px] tracking-wide">{count} QUESTIONS</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Timer */}
+                  <div>
+                    <p className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground mb-3">TIMER</p>
+                    <div className="flex flex-col gap-1.5">
+                      {TIMER_OPTIONS.map((option) => (
+                        <button
+                          key={option.id}
+                          type="button"
+                          onClick={() => setTimerOption(option.id)}
+                          className={`flex items-center gap-2.5 px-3 py-2 border text-left transition-all duration-150 ${
+                            timerOption === option.id
+                              ? 'border-primary bg-primary/8 text-foreground'
+                              : 'border-border hover:border-foreground/30'
+                          }`}
+                        >
+                          <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${
+                            timerOption === option.id ? 'bg-primary' : 'bg-border'
+                          }`} />
+                          <span className="font-mono text-[11px] tracking-wide">{option.label.toUpperCase()}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* CTA */}
+              <section className="animate-slide-up border-t border-border pt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4" style={{ animationDelay: '240ms' }}>
+                <p className="font-mono text-[11px] text-muted-foreground">
+                  {selectedCategoryIds.length === 0
+                    ? 'SELECT TOPICS + DIFFICULTY TO BEGIN'
+                    : `READY — ${selectedDifficulty?.toUpperCase() ?? 'NO DIFFICULTY'} · ${selectedCategoryIds.length} TOPIC${selectedCategoryIds.length > 1 ? 'S' : ''} · ${questionCount} Q`}
+                </p>
+                <button
+                  type="button"
+                  onClick={handleStart}
+                  disabled={!canStart || isGenerating}
+                  className={`font-mono text-[11px] tracking-[0.18em] px-6 py-3 border transition-all duration-150 ${
+                    canStart && !isGenerating
+                      ? 'border-primary bg-primary text-primary-foreground hover:bg-primary/90'
+                      : 'border-border text-muted-foreground cursor-not-allowed'
+                  }`}
+                >
+                  {isGenerating ? 'GENERATING...' : 'START QUIZ →'}
+                </button>
+              </section>
+
+              {!isAuthenticated && (
+                <p className="animate-slide-up font-mono text-[10px] text-muted-foreground" style={{ animationDelay: '300ms' }}>
+                  <Link href="/login" className="text-primary hover:underline underline-offset-4">SIGN IN</Link>
+                  {' '}to save streaks and track past quizzes.
+                </p>
+              )}
+
             </div>
           )}
-
-          {/* Primary CTA */}
-          <section className="mt-10 flex flex-col items-center gap-4 text-center">
-            <div className="space-y-1">
-              <p className="text-sm md:text-base text-muted-foreground max-w-md">
-                {selectedCategoryIds.length === 0
-                  ? "Choose a few topics and a difficulty to begin."
-                  : `You\'re set for a ${selectedDifficulty ?? "news"} quiz across ${selectedCategoryIds.length} topic${selectedCategoryIds.length > 1 ? "s" : ""}.`}
-              </p>
-            </div>
-
-            <Button
-              type="button"
-              size="lg"
-              onClick={handleStart}
-              disabled={!canStart || isGenerating}
-              className="min-w-[200px] shadow-sm"
-            >
-              {isGenerating ? "Preparing your quiz…" : "Start today's quiz"}
-            </Button>
-
-            {!isAuthenticated && (
-              <p className="text-xs md:text-sm text-muted-foreground">
-                <Link href="/login" className="underline underline-offset-4">
-                  Sign in
-                </Link>{" "}
-                to save your streaks and past quizzes.
-              </p>
-            )}
-          </section>
         </div>
       </main>
     </div>
-  );
+  )
 }

@@ -5,11 +5,8 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/store'
 import { getMe, getQuizHistory } from '@/lib/api'
 import { UserQuizResult } from '@/lib/types'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { LogOut, User as UserIcon, Mail, Calendar } from 'lucide-react'
+import { LogOut } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { LinkIcon, Check } from 'lucide-react'
 
 export default function ProfilePage() {
@@ -49,142 +46,133 @@ export default function ProfilePage() {
     router.push('/login')
   }
 
+  const totalQuizzes = quizHistory.length
+  const avgScore = totalQuizzes > 0
+    ? Math.round(quizHistory.reduce((sum, q) => sum + (q.score / q.total_questions) * 100, 0) / totalQuizzes)
+    : 0
+  const bestScore = totalQuizzes > 0
+    ? Math.max(...quizHistory.map(q => Math.round((q.score / q.total_questions) * 100)))
+    : 0
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <main className="flex-1 p-4 md:p-8">
-        <div className="w-full max-w-4xl mx-auto space-y-6">
-          <Card>
-            <CardHeader className="text-center space-y-4">
-              <div className="flex justify-center">
-                <Avatar className="h-24 w-24">
+      <main className="flex-1 px-4 py-10 md:py-14">
+        <div className="w-full max-w-3xl mx-auto space-y-8">
+
+          {/* Profile header */}
+          <div className="animate-slide-up border-t-2 border-foreground pt-4">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <Avatar className="h-14 w-14 border border-border">
                   <AvatarImage
-                    src={
-                      user?.avatar_url ||
-                      `https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(
-                        user?.email || 'user',
-                      )}`
-                    }
-                    alt={user?.name || user?.email || 'Profile picture'}
+                    src={user?.avatar_url || `https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(user?.email || 'user')}`}
+                    alt={user?.name || 'Profile'}
                   />
-                  <AvatarFallback className="text-2xl">
+                  <AvatarFallback className="font-display text-xl bg-muted">
                     {(user?.name || user?.email || '?').charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-              </div>
-              <div>
-                <CardTitle className="text-2xl font-bold">
-                  {isLoading ? 'Loading...' : user?.name || 'User Profile'}
-                </CardTitle>
-                <CardDescription>
-                  {user?.provider === 'email' ? 'Email Account' : `${user?.provider} Account`}
-                </CardDescription>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {error && (
-                <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-                  {error}
-                </div>
-              )}
-
-              {!isLoading && user && (
-                <div className="space-y-4">
-                  <div className="flex items-center space-x-3 text-sm">
-                    <Mail className="h-5 w-5 text-muted-foreground" />
-                    <span>{user.email || 'No email provided'}</span>
-                  </div>
-                  
-                  {user.name && (
-                    <div className="flex items-center space-x-3 text-sm">
-                      <UserIcon className="h-5 w-5 text-muted-foreground" />
-                      <span>{user.name}</span>
-                    </div>
+                <div>
+                  <h1 className="font-display text-3xl text-foreground">
+                    {isLoading ? '...' : user?.name || 'Reader'}
+                  </h1>
+                  <p className="font-mono text-[10px] tracking-[0.18em] text-muted-foreground mt-1">
+                    {user?.email} · {user?.provider?.toUpperCase()} ACCOUNT
+                  </p>
+                  {user?.created_at && (
+                    <p className="font-mono text-[10px] text-muted-foreground tracking-wide mt-0.5">
+                      JOINED {new Date(user.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }).toUpperCase()}
+                    </p>
                   )}
-
-                  <div className="flex items-center space-x-3 text-sm">
-                    <Calendar className="h-5 w-5 text-muted-foreground" />
-                    <span>
-                      {user.created_at ? `Joined ${new Date(user.created_at).toLocaleDateString()}` : 'Date joined unknown'}
-                    </span>
-                  </div>
                 </div>
-              )}
-
-              <Button 
-                variant="destructive" 
-                className="w-full md:w-auto mt-6"
+              </div>
+              <button
+                type="button"
                 onClick={handleLogout}
+                className="flex items-center gap-1.5 font-mono text-[10px] tracking-[0.14em] border border-border px-3 py-2 text-muted-foreground hover:border-destructive/60 hover:text-destructive transition-colors"
               >
-                <LogOut className="h-4 w-4 mr-2" />
-                Sign Out
-              </Button>
-            </CardContent>
-          </Card>
+                <LogOut className="h-3 w-3" />
+                SIGN OUT
+              </button>
+            </div>
 
-          {/* Quiz History Section */}
-          <Card>
-            <CardHeader>
-              <CardTitle>My Quizzes</CardTitle>
-              <CardDescription>Your past quiz results and scores.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {isLoading ? (
-                <p className="text-sm text-muted-foreground">Loading history...</p>
-              ) : quizHistory.length === 0 ? (
-                <p className="text-sm text-muted-foreground">You haven&apos;t taken any quizzes yet.</p>
-              ) : (
-                <div className="border rounded-md">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Date</TableHead>
-                        <TableHead>Score</TableHead>
-                        <TableHead>Difficulty</TableHead>
-                        <TableHead>Topics</TableHead>
-                        <TableHead className="text-right">Action</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {quizHistory.map(quiz => (
-                        <TableRow key={quiz.id}>
-                          <TableCell className="font-medium">
-                            {new Date(quiz.created_at).toLocaleDateString()}
-                          </TableCell>
-                          <TableCell>
-                            {quiz.score} / {quiz.total_questions} (
-                            {Math.round((quiz.score / quiz.total_questions) * 100)}%)
-                          </TableCell>
-                          <TableCell className="capitalize">{quiz.difficulty}</TableCell>
-                          <TableCell className="truncate max-w-[200px]">
-                            {/* Assuming categories is a generic string of topics or IDs */}
-                            {quiz.categories || 'General'}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => {
-                                const url = `${window.location.origin}/quiz/${quiz.quiz_id}`
-                                navigator.clipboard.writeText(url)
-                                setCopiedId(quiz.id)
-                                setTimeout(() => setCopiedId(null), 2000)
-                              }}
-                            >
-                              {copiedId === quiz.id ? (
-                                <Check className="w-4 h-4 text-emerald-500" />
-                              ) : (
-                                <LinkIcon className="w-4 h-4" />
-                              )}
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+            {error && (
+              <div className="mt-4 border-l-2 border-destructive bg-destructive/5 px-4 py-2.5 font-mono text-[11px] text-destructive">
+                {error}
+              </div>
+            )}
+          </div>
+
+          {/* Stats */}
+          {!isLoading && totalQuizzes > 0 && (
+            <div className="animate-slide-up grid grid-cols-3 divide-x divide-border border border-border" style={{ animationDelay: '80ms' }}>
+              {[
+                { label: 'QUIZZES TAKEN', value: totalQuizzes },
+                { label: 'AVG SCORE', value: `${avgScore}%` },
+                { label: 'BEST SCORE', value: `${bestScore}%` },
+              ].map((stat) => (
+                <div key={stat.label} className="px-4 py-5 text-center">
+                  <p className="font-display text-4xl text-foreground">{stat.value}</p>
+                  <p className="font-mono text-[10px] tracking-[0.16em] text-muted-foreground mt-1">{stat.label}</p>
                 </div>
-              )}
-            </CardContent>
-          </Card>
+              ))}
+            </div>
+          )}
+
+          {/* History */}
+          <section className="animate-slide-up" style={{ animationDelay: '160ms' }}>
+            <div className="flex items-center gap-3 mb-4">
+              <span className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground">QUIZ HISTORY</span>
+              <div className="flex-1 h-px bg-border" />
+            </div>
+
+            {isLoading ? (
+              <p className="font-mono text-xs text-muted-foreground tracking-widest animate-pulse">LOADING...</p>
+            ) : quizHistory.length === 0 ? (
+              <div className="border border-border px-5 py-8 text-center">
+                <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground mb-2">NO QUIZZES YET</p>
+                <p className="text-sm text-muted-foreground">Your completed quizzes will appear here.</p>
+              </div>
+            ) : (
+              <div className="border border-border divide-y divide-border">
+                {/* Header */}
+                <div className="grid grid-cols-[1fr_auto_auto_auto_auto] gap-4 px-4 py-2 bg-muted/30">
+                  {['DATE', 'SCORE', 'DIFFICULTY', 'TOPICS', ''].map((h) => (
+                    <span key={h} className="font-mono text-[10px] tracking-[0.18em] text-muted-foreground">{h}</span>
+                  ))}
+                </div>
+                {quizHistory.map(quiz => {
+                  const pct = Math.round((quiz.score / quiz.total_questions) * 100)
+                  return (
+                    <div key={quiz.id} className="grid grid-cols-[1fr_auto_auto_auto_auto] gap-4 items-center px-4 py-3 hover:bg-muted/20 transition-colors">
+                      <span className="font-mono text-[11px] text-muted-foreground">
+                        {new Date(quiz.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                      </span>
+                      <span className={`font-mono text-[11px] font-semibold ${pct >= 80 ? 'text-emerald-500' : pct >= 50 ? 'text-primary' : 'text-destructive'}`}>
+                        {quiz.score}/{quiz.total_questions}
+                      </span>
+                      <span className="font-mono text-[10px] tracking-wide text-muted-foreground uppercase">{quiz.difficulty}</span>
+                      <span className="font-mono text-[10px] text-muted-foreground truncate max-w-[120px]">{quiz.categories || 'GENERAL'}</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const url = `${window.location.origin}/quiz/${quiz.quiz_id}`
+                          navigator.clipboard.writeText(url)
+                          setCopiedId(quiz.id)
+                          setTimeout(() => setCopiedId(null), 2000)
+                        }}
+                        className="text-muted-foreground hover:text-primary transition-colors"
+                      >
+                        {copiedId === quiz.id
+                          ? <Check className="w-3 h-3 text-emerald-500" />
+                          : <LinkIcon className="w-3 h-3" />}
+                      </button>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </section>
         </div>
       </main>
     </div>
