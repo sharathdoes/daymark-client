@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Sans, IBM_Plex_Mono, DM_Serif_Display } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
-import Header from "@/components/header";
+import Sidebar from "@/components/sidebar";
 import RootLayoutClient from "@/components/root-layout-client";
 import "./globals.css";
 
@@ -37,9 +37,11 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${ibmPlexSans.variable} ${ibmPlexMono.variable} ${dmSerifDisplay.variable} font-sans antialiased`}>
         <RootLayoutClient>
-          <Header />
-          {children}
-          <Analytics />
+          <Sidebar />
+          <div className="md:pl-10">
+            {children}
+            <Analytics />
+          </div>
         </RootLayoutClient>
       </body>
     </html>

@@ -48,6 +48,13 @@ export default function Header({ hideAuth = false }: HeaderProps) {
         {/* Right actions */}
         <div className="flex items-center gap-3">
           <Link
+            href="/about"
+            className="hidden md:flex items-center text-[11px] tracking-[0.14em] font-mono text-muted-foreground hover:text-foreground transition-colors"
+          >
+            ABOUT
+          </Link>
+
+          <Link
             href="https://github.com/sharathdoes/daymark"
             target="_blank"
             className="hidden md:flex items-center gap-1.5 text-[11px] tracking-wide font-mono text-muted-foreground hover:text-foreground transition-colors"
