@@ -74,15 +74,15 @@ export default function QuizContent() {
     <div className="space-y-0 border-2 border-foreground">
 
       {/* Header bar */}
-      <div className="border-b-2 border-foreground bg-foreground text-background px-5 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-4 font-mono text-[10px] tracking-[0.22em]">
+      <div className="border-b-2 border-foreground bg-foreground text-background px-4 py-2 flex items-center justify-between">
+        <div className="flex items-center gap-3 font-mono text-[10px] tracking-[0.2em]">
           <span>Q.{String(session.currentIndex + 1).padStart(2, '0')} / {String(totalQuestions).padStart(2, '0')}</span>
           <span className="size-1 rounded-full bg-background/40" />
           <span>{session.quiz.difficulty?.toUpperCase()}</span>
         </div>
         {session.timerOption !== 'none' && (
           <span className={cn(
-            'font-mono text-[11px] tracking-[0.2em] tabular-nums',
+            'font-mono text-[10px] tracking-[0.18em] tabular-nums',
             isTimeLow ? 'text-red-400 animate-pulse' : 'text-background/80'
           )}>
             {formatTime(session.timerSeconds)}
@@ -107,9 +107,9 @@ export default function QuizContent() {
       </div>
 
       {/* Question */}
-      <div className="px-6 md:px-10 py-8 md:py-12 border-b-2 border-foreground">
-        <p className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground mb-5">QUESTION</p>
-        <p className="font-display font-semibold text-2xl md:text-4xl leading-[1.1] tracking-[-0.025em]">
+      <div className="px-5 md:px-7 py-5 md:py-7 border-b-2 border-foreground">
+        <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground mb-3">QUESTION</p>
+        <p className="font-display font-semibold text-lg md:text-2xl leading-[1.2] tracking-[-0.02em]">
           {currentQuestion.question}
         </p>
       </div>
@@ -126,7 +126,7 @@ export default function QuizContent() {
               type="button"
               onClick={() => handleOptionClick(index)}
               className={cn(
-                'flex items-start gap-5 px-5 py-5 md:px-7 md:py-7 text-left transition-all cursor-pointer group',
+                'flex items-start gap-3 px-4 py-3.5 md:px-5 md:py-4 text-left transition-all cursor-pointer group',
                 !isRightCol && 'md:border-r-2 border-foreground',
                 isBottomRow && 'border-t-2 border-foreground',
                 index === 1 && 'border-t-2 md:border-t-0 border-foreground',
@@ -136,12 +136,12 @@ export default function QuizContent() {
               )}
             >
               <span className={cn(
-                'font-display font-bold text-3xl md:text-4xl tracking-[-0.04em] tabular-nums shrink-0 leading-none mt-1 transition-colors',
+                'font-display font-bold text-xl md:text-2xl tracking-[-0.03em] tabular-nums shrink-0 leading-none mt-0.5 transition-colors',
                 isSelected ? 'text-background' : 'text-muted-foreground group-hover:text-foreground'
               )}>
                 {LETTER_LABELS[index]}
               </span>
-              <span className="flex-1 text-base md:text-lg leading-snug">{option}</span>
+              <span className="flex-1 text-sm md:text-base leading-snug">{option}</span>
             </button>
           )
         })}
@@ -149,7 +149,7 @@ export default function QuizContent() {
 
       {/* Footer */}
       <div className="border-t-2 border-foreground grid grid-cols-12">
-        <div className="col-span-7 px-5 py-4 border-r-2 border-foreground flex items-center font-mono text-[10px] tracking-[0.22em] text-muted-foreground">
+        <div className="col-span-7 px-4 py-3 border-r-2 border-foreground flex items-center font-mono text-[10px] tracking-[0.2em] text-muted-foreground">
           {isAnswered ? 'ANSWER LOCKED · CONTINUE' : 'SELECT AN OPTION'}
         </div>
         <button
@@ -157,16 +157,16 @@ export default function QuizContent() {
           onClick={handleNext}
           disabled={!isAnswered}
           className={cn(
-            'col-span-5 px-5 py-4 flex items-center justify-between gap-3 transition-colors group',
+            'col-span-5 px-4 py-3 flex items-center justify-between gap-2 transition-colors group',
             isAnswered
               ? 'bg-foreground text-background hover:bg-foreground/85 cursor-pointer'
               : 'bg-muted text-muted-foreground/60 cursor-not-allowed'
           )}
         >
-          <span className="font-display font-semibold text-lg md:text-xl tracking-[-0.02em]">
+          <span className="font-display font-semibold text-base md:text-lg tracking-[-0.02em]">
             {isLastQuestion && isAnswered ? 'See results' : isAnswered ? 'Next' : 'Pick an answer'}
           </span>
-          <ArrowUpRight className="size-5 group-hover:rotate-12 transition-transform" />
+          <ArrowUpRight className="size-4 group-hover:rotate-12 transition-transform" />
         </button>
       </div>
     </div>

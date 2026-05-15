@@ -8,36 +8,39 @@ export const metadata = {
 export default function AboutPage() {
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
-      <main className="flex-1">
-        <div className="max-w-5xl mx-auto px-4">
+      <main className="flex-1 flex items-center">
+        <div className="w-full max-w-5xl mx-auto px-4">
 
           {/* Masthead bar */}
-          <div className="flex items-center justify-between py-3 border-b border-border">
+          <header className="border-y-2 border-foreground py-3 flex items-center justify-between flex-wrap gap-2">
             <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground">ABOUT DAYMARK</span>
+            <h1 className="font-display font-bold text-3xl md:text-4xl tracking-[-0.03em] leading-none order-first md:order-none w-full md:w-auto text-center">
+              About.
+            </h1>
             <Link
               href="/daily"
-              className="flex items-center gap-2 font-mono text-[10px] tracking-[0.16em] text-primary hover:opacity-80 transition-opacity"
+              className="flex items-center gap-2 font-mono text-[10px] tracking-[0.18em] text-muted-foreground hover:text-foreground transition-colors"
             >
-              <span className="pulse-amber w-1.5 h-1.5 rounded-full bg-primary inline-block" />
+              <span className="pulse-soft size-1.5 rounded-full bg-red-600 inline-block" />
               DAILY CHALLENGE
             </Link>
-          </div>
+          </header>
 
           {/* 2-column editorial body */}
-          <div className="flex flex-col md:flex-row">
+          <div className="flex flex-col md:flex-row border-b-2 border-foreground">
 
             {/* Col 1 — Editorial content */}
-            <div className="flex-[6] border-b md:border-b-0 md:border-r border-border py-8 md:pr-10">
+            <div className="flex-[6] border-b-2 md:border-b-0 md:border-r-2 border-foreground py-6 md:pr-8">
 
-              <h1 className="font-semibold tracking-tight text-4xl md:text-5xl leading-[1.06] text-foreground mb-6">
+              <h2 className="font-display font-bold text-2xl md:text-3xl tracking-[-0.025em] leading-[1.05] mb-5">
                 Built for people who<br />
-                <span className="text-primary italic">actually read the news.</span>
-              </h1>
+                <span className="text-muted-foreground italic">actually read the news.</span>
+              </h2>
 
-              <div className="space-y-8">
+              <div className="space-y-6">
 
                 <div>
-                  <p className="font-mono text-[9px] tracking-[0.24em] text-muted-foreground pb-2 mb-4 border-b border-border">
+                  <p className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground pb-2 mb-3 border-b-2 border-foreground/20">
                     WHAT IT IS
                   </p>
                   <div className="space-y-3 text-sm text-foreground leading-relaxed">
@@ -55,7 +58,7 @@ export default function AboutPage() {
                 </div>
 
                 <div>
-                  <p className="font-mono text-[9px] tracking-[0.24em] text-muted-foreground pb-2 mb-4 border-b border-border">
+                  <p className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground pb-2 mb-3 border-b-2 border-foreground/20">
                     WHY IT EXISTS
                   </p>
                   <div className="space-y-3 text-sm text-foreground leading-relaxed">
@@ -73,13 +76,13 @@ export default function AboutPage() {
                 </div>
 
                 <div>
-                  <p className="font-mono text-[9px] tracking-[0.24em] text-muted-foreground pb-2 mb-4 border-b border-border">
+                  <p className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground pb-2 mb-3 border-b-2 border-foreground/20">
                     DAILY CHALLENGE
                   </p>
-                  <div className="border border-border p-4 space-y-2">
+                  <div className="border-2 border-foreground p-4 space-y-2">
                     <div className="flex items-center gap-2">
-                      <span className="pulse-amber w-1.5 h-1.5 rounded-full bg-primary inline-block" />
-                      <span className="font-mono text-[9px] tracking-[0.18em] text-primary">LIVE EACH MORNING</span>
+                      <span className="pulse-soft w-1.5 h-1.5 rounded-full bg-red-600 inline-block" />
+                      <span className="font-mono text-[10px] tracking-[0.2em]">LIVE EACH MORNING</span>
                     </div>
                     <p className="text-sm text-foreground leading-relaxed">
                       Every morning at 06:00 IST, a single challenge is issued for all players.
@@ -92,7 +95,7 @@ export default function AboutPage() {
                 </div>
 
                 <div>
-                  <p className="font-mono text-[9px] tracking-[0.24em] text-muted-foreground pb-2 mb-4 border-b border-border">
+                  <p className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground pb-2 mb-3 border-b-2 border-foreground/20">
                     THE PROJECT
                   </p>
                   <div className="space-y-2 text-sm leading-relaxed">
@@ -127,17 +130,17 @@ export default function AboutPage() {
             </div>
 
             {/* Col 2 — Technical pipeline */}
-            <div className="flex-[4] py-8 md:pl-8">
+            <div className="flex-[4] py-6 md:pl-8">
 
-              <div className="space-y-8">
+              <div className="space-y-6">
 
                 <div>
-                  <p className="font-mono text-[9px] tracking-[0.24em] text-muted-foreground pb-2 mb-4 border-b border-border">
+                  <p className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground pb-2 mb-3 border-b-2 border-foreground/20">
                     HOW ARTICLES ARE SOURCED
                   </p>
                   <div className="space-y-4">
                     <div className="flex gap-3">
-                      <span className="font-mono text-[10px] tracking-[0.16em] text-primary mt-0.5 shrink-0">RSS</span>
+                      <span className="font-mono text-[10px] tracking-[0.18em] text-foreground bg-foreground/10 px-1.5 py-0.5 mt-0.5 shrink-0">RSS</span>
                       <p className="text-xs text-muted-foreground leading-relaxed">
                         We monitor RSS feeds from major publishers — BBC News, The Guardian,
                         Reuters, Associated Press, and others — across every supported category.
@@ -145,7 +148,7 @@ export default function AboutPage() {
                       </p>
                     </div>
                     <div className="flex gap-3">
-                      <span className="font-mono text-[10px] tracking-[0.16em] text-primary mt-0.5 shrink-0">SCRAPE</span>
+                      <span className="font-mono text-[10px] tracking-[0.18em] text-foreground bg-foreground/10 px-1.5 py-0.5 mt-0.5 shrink-0">SCRAPE</span>
                       <p className="text-xs text-muted-foreground leading-relaxed">
                         When a new item appears in a feed, the full article is fetched and scraped.
                         We extract the body text, headline, publication timestamp, and source attribution.
@@ -153,7 +156,7 @@ export default function AboutPage() {
                       </p>
                     </div>
                     <div className="flex gap-3">
-                      <span className="font-mono text-[10px] tracking-[0.16em] text-primary mt-0.5 shrink-0">INDEX</span>
+                      <span className="font-mono text-[10px] tracking-[0.18em] text-foreground bg-foreground/10 px-1.5 py-0.5 mt-0.5 shrink-0">INDEX</span>
                       <p className="text-xs text-muted-foreground leading-relaxed">
                         Articles are indexed by category and date. Only content published within the
                         current calendar day qualifies for that day&apos;s quiz pool.
@@ -163,12 +166,12 @@ export default function AboutPage() {
                 </div>
 
                 <div>
-                  <p className="font-mono text-[9px] tracking-[0.24em] text-muted-foreground pb-2 mb-4 border-b border-border">
+                  <p className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground pb-2 mb-3 border-b-2 border-foreground/20">
                     HOW QUESTIONS ARE GENERATED
                   </p>
                   <div className="space-y-4">
                     <div className="flex gap-3">
-                      <span className="font-mono text-[10px] tracking-[0.16em] text-primary mt-0.5 shrink-0">LLM</span>
+                      <span className="font-mono text-[10px] tracking-[0.18em] text-foreground bg-foreground/10 px-1.5 py-0.5 mt-0.5 shrink-0">LLM</span>
                       <p className="text-xs text-muted-foreground leading-relaxed">
                         Scraped article text is passed to a language model with strict prompting:
                         generate factual, unambiguous multiple-choice questions tied directly
@@ -176,14 +179,14 @@ export default function AboutPage() {
                       </p>
                     </div>
                     <div className="flex gap-3">
-                      <span className="font-mono text-[10px] tracking-[0.16em] text-primary mt-0.5 shrink-0">CACHE</span>
+                      <span className="font-mono text-[10px] tracking-[0.18em] text-foreground bg-foreground/10 px-1.5 py-0.5 mt-0.5 shrink-0">CACHE</span>
                       <p className="text-xs text-muted-foreground leading-relaxed">
                         Generated questions are cached and linked back to their source article.
                         When you finish a quiz, each question links to the original story.
                       </p>
                     </div>
                     <div className="flex gap-3">
-                      <span className="font-mono text-[10px] tracking-[0.16em] text-primary mt-0.5 shrink-0">EXPIRE</span>
+                      <span className="font-mono text-[10px] tracking-[0.18em] text-foreground bg-foreground/10 px-1.5 py-0.5 mt-0.5 shrink-0">EXPIRE</span>
                       <p className="text-xs text-muted-foreground leading-relaxed">
                         Questions expire with the day. Yesterday&apos;s articles do not carry
                         forward into today&apos;s pool, keeping the quiz current.
@@ -193,7 +196,7 @@ export default function AboutPage() {
                 </div>
 
                 <div>
-                  <p className="font-mono text-[9px] tracking-[0.24em] text-muted-foreground pb-2 mb-4 border-b border-border">
+                  <p className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground pb-2 mb-3 border-b-2 border-foreground/20">
                     SOURCES
                   </p>
                   <div className="flex flex-wrap gap-x-4 gap-y-1">
@@ -201,7 +204,7 @@ export default function AboutPage() {
                       'BBC News', 'The Guardian', 'Reuters', 'Associated Press',
                       'Al Jazeera', 'NPR', 'The Verge', 'Ars Technica',
                     ].map((source) => (
-                      <span key={source} className="font-mono text-[9px] tracking-wide text-muted-foreground">
+                      <span key={source} className="font-mono text-[10px] tracking-[0.14em] text-muted-foreground">
                         {source}
                       </span>
                     ))}
@@ -214,16 +217,16 @@ export default function AboutPage() {
           </div>
 
           {/* Footer CTA strip */}
-          <div className="border-t border-border py-5 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+          <div className="py-4 flex flex-col sm:flex-row items-start sm:items-center gap-2">
             <Link
               href="/"
-              className="font-mono text-[11px] tracking-[0.18em] px-6 py-2.5 border border-primary bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-150"
+              className="font-mono text-[10px] tracking-[0.2em] px-5 py-2.5 bg-foreground text-background hover:bg-foreground/85 transition-colors"
             >
               START TODAY&apos;S QUIZ →
             </Link>
             <Link
               href="/daily"
-              className="font-mono text-[11px] tracking-[0.14em] px-6 py-2.5 border border-border text-muted-foreground hover:border-foreground/30 hover:text-foreground transition-all duration-150"
+              className="font-mono text-[10px] tracking-[0.18em] px-5 py-2.5 border-2 border-foreground/20 text-muted-foreground hover:border-foreground hover:text-foreground transition-colors"
             >
               DAILY CHALLENGE
             </Link>
@@ -231,7 +234,7 @@ export default function AboutPage() {
               href="https://github.com/sharathdoes/daymark"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-mono text-[11px] tracking-[0.14em] px-6 py-2.5 border border-border text-muted-foreground hover:border-foreground/30 hover:text-foreground transition-all duration-150"
+              className="font-mono text-[10px] tracking-[0.18em] px-5 py-2.5 border-2 border-foreground/20 text-muted-foreground hover:border-foreground hover:text-foreground transition-colors"
             >
               GITHUB
             </a>

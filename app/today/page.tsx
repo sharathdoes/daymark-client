@@ -33,20 +33,20 @@ export default function TodayPage() {
   const rest = filtered.slice(1)
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground flex flex-col">
       <NavStrip active="today" />
 
-      <main className="px-5 md:px-10 py-6">
+      <main className="flex-1 flex items-center px-5 md:px-10 py-6">
         <div className="mx-auto w-full max-w-6xl">
 
           {/* Section masthead */}
           <BlurFade delay={0.05} inView>
-            <header className="border-y-2 border-foreground py-4 flex items-end justify-between flex-wrap gap-3">
-              <div className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground">{todayLong}</div>
-              <h1 className="font-display font-extrabold text-5xl md:text-7xl tracking-[-0.04em] leading-[0.9] order-1 md:order-none w-full md:w-auto text-center mt-1">
+            <header className="border-y-2 border-foreground py-3 flex items-center justify-between flex-wrap gap-2">
+              <div className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground">{todayLong}</div>
+              <h1 className="font-display font-bold text-3xl md:text-4xl tracking-[-0.03em] leading-none">
                 Today's Read.
               </h1>
-              <div className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground">
+              <div className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground">
                 {articles.length} STORIES
               </div>
             </header>
@@ -55,15 +55,15 @@ export default function TodayPage() {
           {/* Filter strip */}
           {!loading && !error && categories.length > 0 && (
             <BlurFade delay={0.2} inView>
-              <div className="border-b-2 border-foreground py-3 flex items-center gap-1 overflow-x-auto">
-                <span className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground shrink-0 pr-3 border-r border-border mr-2">
+              <div className="border-b-2 border-foreground py-2 flex items-center gap-1 overflow-x-auto">
+                <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground shrink-0 pr-3 border-r border-border mr-2">
                   SECTIONS
                 </span>
                 <button
                   type="button"
                   onClick={() => setFilter(null)}
                   className={cn(
-                    'shrink-0 font-mono text-[10px] tracking-[0.18em] uppercase px-2.5 py-1 transition-colors',
+                    'shrink-0 font-mono text-[10px] tracking-[0.16em] uppercase px-2 py-0.5 transition-colors',
                     filter === null ? 'bg-foreground text-background' : 'text-muted-foreground hover:text-foreground'
                   )}
                 >
@@ -75,7 +75,7 @@ export default function TodayPage() {
                     type="button"
                     onClick={() => setFilter(filter === cat ? null : cat)}
                     className={cn(
-                      'shrink-0 font-mono text-[10px] tracking-[0.18em] uppercase px-2.5 py-1 transition-colors',
+                      'shrink-0 font-mono text-[10px] tracking-[0.16em] uppercase px-2 py-0.5 transition-colors',
                       filter === cat ? 'bg-foreground text-background' : 'text-muted-foreground hover:text-foreground'
                     )}
                   >
@@ -109,22 +109,22 @@ export default function TodayPage() {
           {!loading && !error && lead && (
             <BlurFade delay={0.3} inView>
               <article className="grid md:grid-cols-12 gap-0 border-b-2 border-foreground group">
-                <div className="md:col-span-7 p-6 md:p-10 md:border-r-2 border-foreground">
-                  <div className="flex items-center gap-3 mb-5">
-                    <span className="font-mono text-[10px] tracking-[0.22em] bg-foreground text-background px-2 py-1">
+                <div className="md:col-span-7 p-5 md:p-7 md:border-r-2 border-foreground">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="font-mono text-[10px] tracking-[0.2em] bg-foreground text-background px-2 py-0.5">
                       LEAD STORY
                     </span>
-                    <span className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground">
+                    <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground">
                       {lead.category?.toUpperCase()}
                     </span>
                   </div>
-                  <h2 className="font-display font-bold leading-[0.95] tracking-[-0.035em] text-[clamp(2rem,4.5vw,3.75rem)] mb-6">
+                  <h2 className="font-display font-bold leading-[0.95] tracking-[-0.025em] text-[clamp(1.5rem,2.8vw,2.25rem)] mb-4">
                     {lead.headline}
                   </h2>
-                  <p className="text-base text-muted-foreground leading-relaxed max-w-prose mb-6">
+                  <p className="text-sm text-muted-foreground leading-relaxed max-w-prose mb-4">
                     {lead.summary}
                   </p>
-                  <div className="flex items-center gap-5 font-mono text-[10px] tracking-[0.18em] text-muted-foreground">
+                  <div className="flex items-center gap-4 font-mono text-[10px] tracking-[0.16em] text-muted-foreground">
                     <span>{lead.source?.toUpperCase()}</span>
                     <span>·</span>
                     <span>{lead.readTime} MIN READ</span>
@@ -140,15 +140,15 @@ export default function TodayPage() {
                 </div>
                 <Link
                   href="/quiz"
-                  className="md:col-span-5 bg-foreground text-background p-6 md:p-10 flex flex-col justify-between hover:bg-foreground/90 transition-colors group min-h-[200px]"
+                  className="md:col-span-5 bg-foreground text-background p-5 md:p-7 flex flex-col justify-between hover:bg-foreground/90 transition-colors group min-h-[140px]"
                 >
                   <div>
-                    <p className="font-mono text-[10px] tracking-[0.22em] text-background/70 mb-4">QUIZ HOOK</p>
-                    <p className="font-display font-semibold text-2xl md:text-3xl leading-[1.05] tracking-[-0.02em]">
+                    <p className="font-mono text-[10px] tracking-[0.2em] text-background/70 mb-2">QUIZ HOOK</p>
+                    <p className="font-display font-semibold text-lg md:text-xl leading-[1.15] tracking-[-0.015em]">
                       Could you answer 3 questions about this story without re-reading it?
                     </p>
                   </div>
-                  <span className="inline-flex items-center gap-2 font-mono text-[10px] tracking-[0.22em] mt-6 group-hover:gap-3 transition-all">
+                  <span className="inline-flex items-center gap-2 font-mono text-[10px] tracking-[0.2em] mt-4 group-hover:gap-3 transition-all">
                     TAKE THE QUIZ <ArrowUpRight className="size-3" />
                   </span>
                 </Link>
@@ -163,26 +163,26 @@ export default function TodayPage() {
                 <BlurFade key={article.id} delay={0.4 + i * 0.05} inView>
                   <article
                     className={cn(
-                      'group h-full p-6 md:p-7 flex flex-col',
+                      'group h-full p-4 md:p-5 flex flex-col',
                       (i % 3) !== 2 && 'md:border-r-2 border-foreground',
                       i >= 3 && 'border-t-2 border-foreground'
                     )}
                   >
-                    <div className="flex items-center gap-3 mb-4">
-                      <span className="font-mono text-[10px] tracking-[0.2em] text-foreground border border-foreground/30 px-1.5 py-0.5">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="font-mono text-[10px] tracking-[0.18em] text-foreground border border-foreground/30 px-1.5 py-0.5">
                         {article.category?.toUpperCase()}
                       </span>
-                      <span className="font-mono text-[10px] tracking-[0.18em] text-muted-foreground">
+                      <span className="font-mono text-[10px] tracking-[0.16em] text-muted-foreground">
                         №{String(i + 2).padStart(2, '0')}
                       </span>
                     </div>
-                    <h3 className="font-display font-semibold text-2xl leading-[1.05] tracking-[-0.025em] mb-3 group-hover:text-foreground/80 transition-colors">
+                    <h3 className="font-display font-semibold text-base md:text-lg leading-[1.15] tracking-[-0.02em] mb-2 group-hover:text-foreground/80 transition-colors">
                       {article.headline}
                     </h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed flex-1 mb-5">
+                    <p className="text-xs text-muted-foreground leading-relaxed flex-1 mb-3">
                       {article.summary}
                     </p>
-                    <div className="pt-4 border-t border-border flex items-center justify-between font-mono text-[10px] tracking-[0.18em] text-muted-foreground">
+                    <div className="pt-3 border-t border-border flex items-center justify-between font-mono text-[10px] tracking-[0.16em] text-muted-foreground">
                       <span>{article.source?.toUpperCase()} · {article.readTime}M</span>
                       <div className="flex items-center gap-3">
                         {article.url && (
@@ -203,11 +203,11 @@ export default function TodayPage() {
 
           {/* COLOPHON */}
           <BlurFade delay={0.9} inView>
-            <footer className="py-6 flex items-center justify-between flex-wrap gap-3">
-              <p className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground">
+            <footer className="py-4 flex items-center justify-between flex-wrap gap-2">
+              <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground">
                 ARTICLES SUMMARIZED FROM RSS · UPDATED HOURLY
               </p>
-              <Link href="/about" className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2">
+              <Link href="/about" className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2">
                 HOW IT WORKS <ArrowUpRight className="size-3" />
               </Link>
             </footer>

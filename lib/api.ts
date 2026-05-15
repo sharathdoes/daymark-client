@@ -12,7 +12,7 @@ import {
   SubscribeRequest,
 } from './types'
 
-const BASE_URL = "http://localhost:8080";
+const BASE_URL = "https://alright-bev-lumaai-69a46e17.koyeb.app";
 
 // GET /articles/today
 export async function getTodayArticles(): Promise<Article[]> {

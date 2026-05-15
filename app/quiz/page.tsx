@@ -131,10 +131,10 @@ export default function QuizPage() {
 
   if (session && !session.completed) {
     return (
-      <div className="min-h-screen bg-background text-foreground">
+      <div className="min-h-screen bg-background text-foreground flex flex-col">
         {isGenerating && <LoadingOverlay />}
         <NavStrip active="quiz" />
-        <div className="px-5 md:px-10 py-8">
+        <div className="flex-1 flex items-center px-5 md:px-10 py-8">
           <div className="mx-auto w-full max-w-3xl">
             <QuizContent />
           </div>
@@ -144,11 +144,11 @@ export default function QuizPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground flex flex-col">
       {isGenerating && <LoadingOverlay />}
       <NavStrip active="quiz" />
 
-      <main className="px-5 md:px-10 py-6">
+      <main className="flex-1 flex items-center px-5 md:px-10 py-6">
         <div className="mx-auto w-full max-w-5xl">
 
           {/* Masthead */}

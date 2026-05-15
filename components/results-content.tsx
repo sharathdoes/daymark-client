@@ -94,15 +94,15 @@ export default function ResultsContent() {
           </div>
 
           {/* Score — editorial headline */}
-          <div className="text-center py-8 border border-border">
-            <div className="font-semibold tracking-tight text-7xl md:text-8xl text-foreground mb-3 tracking-tight">
-              {score}<span className="text-muted-foreground/40 text-5xl md:text-6xl"> / {total}</span>
+          <div className="text-center py-5 border border-border">
+            <div className="font-semibold tracking-tight text-4xl md:text-5xl text-foreground mb-2">
+              {score}<span className="text-muted-foreground/40 text-3xl md:text-4xl"> / {total}</span>
             </div>
-            <div className="font-mono text-xs tracking-[0.25em] text-primary mb-1">{label}</div>
-            <div className="font-mono text-[11px] text-muted-foreground">{subtext}</div>
+            <div className="font-mono text-[11px] tracking-[0.22em] text-primary mb-1">{label}</div>
+            <div className="font-mono text-[10px] text-muted-foreground">{subtext}</div>
 
             {/* Percentage bar */}
-            <div className="mt-5 mx-auto max-w-xs">
+            <div className="mt-3 mx-auto max-w-xs">
               <div className="h-px bg-border overflow-hidden">
                 <div
                   className="h-full bg-primary transition-all duration-1000 ease-out"
