@@ -2,7 +2,9 @@
 
 import React, { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { ArrowUpRight } from 'lucide-react'
 import { useQuiz } from '@/lib/store'
+import { cn } from '@/lib/utils'
 
 const LETTER_LABELS = ['A', 'B', 'C', 'D']
 
@@ -33,14 +35,14 @@ export default function QuizContent() {
   if (totalQuestions === 0) {
     return (
       <div className="space-y-6">
-        <div className="border border-border p-6">
-          <p className="font-mono text-xs tracking-widest text-muted-foreground mb-2">ERROR</p>
-          <p className="text-sm text-foreground">This quiz has no questions. Please try generating a new one.</p>
+        <div className="border-2 border-foreground p-6">
+          <p className="font-mono text-[10px] tracking-[0.22em] uppercase text-destructive mb-2">ERROR</p>
+          <p className="text-sm">This quiz has no questions. Try generating a new one.</p>
         </div>
         <button
           type="button"
           onClick={() => router.push('/')}
-          className="font-mono text-[11px] tracking-[0.18em] border border-border px-5 py-2.5 text-muted-foreground hover:border-foreground/40 hover:text-foreground transition-colors"
+          className="font-mono text-[11px] tracking-[0.22em] uppercase border-2 border-foreground px-5 py-2.5 hover:bg-foreground hover:text-background transition-colors"
         >
           GO BACK
         </button>
@@ -69,100 +71,102 @@ export default function QuizContent() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-0 border-2 border-foreground">
 
-      {/* Progress header */}
-      <div>
-        <div className="flex items-center justify-between mb-2">
-          <span className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground">
-            Q{String(session.currentIndex + 1).padStart(2, '0')} / {String(totalQuestions).padStart(2, '0')}
+      {/* Header bar */}
+      <div className="border-b-2 border-foreground bg-foreground text-background px-5 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-4 font-mono text-[10px] tracking-[0.22em]">
+          <span>Q.{String(session.currentIndex + 1).padStart(2, '0')} / {String(totalQuestions).padStart(2, '0')}</span>
+          <span className="size-1 rounded-full bg-background/40" />
+          <span>{session.quiz.difficulty?.toUpperCase()}</span>
+        </div>
+        {session.timerOption !== 'none' && (
+          <span className={cn(
+            'font-mono text-[11px] tracking-[0.2em] tabular-nums',
+            isTimeLow ? 'text-red-400 animate-pulse' : 'text-background/80'
+          )}>
+            {formatTime(session.timerSeconds)}
           </span>
-          {session.timerOption !== 'none' && (
-            <span className={`font-mono text-[11px] tracking-widest ${isTimeLow ? 'text-destructive pulse-amber' : 'text-muted-foreground'}`}>
-              {formatTime(session.timerSeconds)}
-            </span>
-          )}
-        </div>
-        {/* Progress bar */}
-        <div className="h-px bg-border w-full overflow-hidden">
+        )}
+      </div>
+
+      {/* Progress segments */}
+      <div className="border-b-2 border-foreground flex h-1.5">
+        {Array.from({ length: totalQuestions }).map((_, i) => (
           <div
-            className="h-full bg-primary transition-all duration-500 ease-out"
-            style={{ width: `${progress}%` }}
+            key={i}
+            className={cn(
+              'flex-1 transition-colors duration-300',
+              i < totalQuestions - 1 && 'border-r border-foreground/15',
+              i < session.currentIndex ? 'bg-foreground' :
+              i === session.currentIndex ? 'bg-foreground/50' : 'bg-background'
+            )}
+            style={{ opacity: i === session.currentIndex ? Math.max(0.5, progress / 100) : undefined }}
           />
-        </div>
-        {/* Segment markers */}
-        <div className="flex mt-1 gap-px">
-          {Array.from({ length: totalQuestions }).map((_, i) => (
-            <div
-              key={i}
-              className={`flex-1 h-0.5 transition-colors duration-300 ${
-                i < session.currentIndex ? 'bg-primary/40' :
-                i === session.currentIndex ? 'bg-primary' : 'bg-border/40'
-              }`}
-            />
-          ))}
-        </div>
+        ))}
       </div>
 
       {/* Question */}
-      <div className="border border-border">
-        <div className="border-b border-border px-5 py-3 flex items-center gap-3">
-          <span className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground">QUESTION</span>
-          <span className="font-mono text-[10px] text-primary tracking-widest">
-            {session.quiz.difficulty?.toUpperCase()}
-          </span>
-        </div>
-        <div className="px-5 py-5">
-          <p className="text-base md:text-lg leading-relaxed text-foreground font-medium">
-            {currentQuestion.question}
-          </p>
-        </div>
+      <div className="px-6 md:px-10 py-8 md:py-12 border-b-2 border-foreground">
+        <p className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground mb-5">QUESTION</p>
+        <p className="font-display font-semibold text-2xl md:text-4xl leading-[1.1] tracking-[-0.025em]">
+          {currentQuestion.question}
+        </p>
       </div>
 
       {/* Options */}
-      <div className="space-y-1.5">
+      <div className="grid grid-cols-1 md:grid-cols-2">
         {currentQuestion.options.map((option, index) => {
           const isSelected = index === selectedAnswer
+          const isRightCol = index % 2 === 1
+          const isBottomRow = index >= 2
           return (
             <button
               key={index}
               type="button"
               onClick={() => handleOptionClick(index)}
-              className={`flex w-full items-start gap-4 border px-4 py-3.5 text-left transition-all duration-100 cursor-pointer group ${
+              className={cn(
+                'flex items-start gap-5 px-5 py-5 md:px-7 md:py-7 text-left transition-all cursor-pointer group',
+                !isRightCol && 'md:border-r-2 border-foreground',
+                isBottomRow && 'border-t-2 border-foreground',
+                index === 1 && 'border-t-2 md:border-t-0 border-foreground',
                 isSelected
-                  ? 'border-primary bg-primary/6 text-foreground'
-                  : 'border-border hover:border-foreground/30 bg-background'
-              }`}
+                  ? 'bg-foreground text-background'
+                  : 'hover:bg-muted'
+              )}
             >
-              <span className={`font-mono text-[11px] font-semibold tracking-widest flex-shrink-0 mt-0.5 transition-colors ${
-                isSelected ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground/60'
-              }`}>
+              <span className={cn(
+                'font-display font-bold text-3xl md:text-4xl tracking-[-0.04em] tabular-nums shrink-0 leading-none mt-1 transition-colors',
+                isSelected ? 'text-background' : 'text-muted-foreground group-hover:text-foreground'
+              )}>
                 {LETTER_LABELS[index]}
               </span>
-              <span className="flex-1 text-sm leading-relaxed">
-                {option}
-              </span>
-              {isSelected && (
-                <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-primary mt-1.5" />
-              )}
+              <span className="flex-1 text-base md:text-lg leading-snug">{option}</span>
             </button>
           )
         })}
       </div>
 
-      {/* Next */}
-      <div className="flex justify-end pt-2 border-t border-border">
+      {/* Footer */}
+      <div className="border-t-2 border-foreground grid grid-cols-12">
+        <div className="col-span-7 px-5 py-4 border-r-2 border-foreground flex items-center font-mono text-[10px] tracking-[0.22em] text-muted-foreground">
+          {isAnswered ? 'ANSWER LOCKED · CONTINUE' : 'SELECT AN OPTION'}
+        </div>
         <button
           type="button"
           onClick={handleNext}
           disabled={!isAnswered}
-          className={`font-mono text-[11px] tracking-[0.18em] px-6 py-3 border transition-all duration-150 ${
+          className={cn(
+            'col-span-5 px-5 py-4 flex items-center justify-between gap-3 transition-colors group',
             isAnswered
-              ? 'border-primary bg-primary text-primary-foreground hover:bg-primary/90'
-              : 'border-border text-muted-foreground cursor-not-allowed opacity-50'
-          }`}
+              ? 'bg-foreground text-background hover:bg-foreground/85 cursor-pointer'
+              : 'bg-muted text-muted-foreground/60 cursor-not-allowed'
+          )}
         >
-          {isLastQuestion && isAnswered ? 'SEE RESULTS →' : isAnswered ? 'NEXT →' : 'SELECT AN ANSWER'}
+          <span className="font-display font-semibold text-lg md:text-xl tracking-[-0.02em]">
+            {isLastQuestion && isAnswered ? 'See results' : isAnswered ? 'Next' : 'Pick an answer'}
+          </span>
+          <ArrowUpRight className="size-5 group-hover:rotate-12 transition-transform" />
         </button>
       </div>
     </div>

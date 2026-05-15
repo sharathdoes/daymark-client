@@ -3,12 +3,12 @@
 import { useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import { ArrowUpRight } from 'lucide-react'
 import { useAuth, useQuiz } from '@/lib/store'
 import { signUp, verifyEmailSignUp, loginWithGoogle, loginWithGithub, generateQuiz } from '@/lib/api'
 import type { QuizSession } from '@/lib/types'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
+import { BlurFade } from '@/components/ui/blur-fade'
+import { cn } from '@/lib/utils'
 
 export default function SignupPage() {
   const router = useRouter()
@@ -29,7 +29,6 @@ export default function SignupPage() {
     e.preventDefault()
     setError('')
     setIsLoading(true)
-
     try {
       const res = await signUp({ name, email, password })
       setPendingEmail(res.email)
@@ -46,27 +45,20 @@ export default function SignupPage() {
     e.preventDefault()
     setError('')
     setIsLoading(true)
-
     try {
       const response = await verifyEmailSignUp(pendingEmail || email, otp)
       setAuth(response.user, response.token)
       const categoriesParam = searchParams.get('categories')
       const difficultyParam = searchParams.get('difficulty')
       const countParam = searchParams.get('count')
-
       if (categoriesParam && difficultyParam) {
-        const categoryIds = categoriesParam
-          .split(',')
-          .map(Number)
-          .filter(id => !Number.isNaN(id))
-
+        const categoryIds = categoriesParam.split(',').map(Number).filter(id => !Number.isNaN(id))
         try {
           const quiz = await generateQuiz({
             category_ids: categoryIds,
             difficulty: difficultyParam,
             number_of_questions: countParam ? Number(countParam) : 10,
           })
-
           const session: QuizSession = {
             quiz,
             currentIndex: 0,
@@ -76,7 +68,6 @@ export default function SignupPage() {
             timerOption: 'none',
             timerSeconds: 0,
           }
-
           setSession(session)
           router.push('/quiz')
         } catch (err) {
@@ -94,155 +85,135 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4 py-10">
-      <div className="w-full max-w-sm">
-        <Card>
-          <CardHeader className="space-y-1 text-center">
-            <CardTitle className="text-2xl font-semibold tracking-tight">
-              Create your Daymark account
-            </CardTitle>
-            <CardDescription className="text-xs">
-              A few details are all we need to set things up.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {error && (
-              <div className="rounded-md border border-destructive/40 bg-destructive/5 px-3 py-2 text-xs text-destructive">
-                {error}
-              </div>
-            )}
+    <div className="min-h-screen bg-background text-foreground flex items-center justify-center px-5 py-10">
+      <BlurFade inView className="w-full max-w-md">
+        <header className="border-y-2 border-foreground py-4">
+          <div className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground text-center">NEW SUBSCRIBER</div>
+          <h1 className="font-display font-extrabold text-5xl md:text-6xl tracking-[-0.04em] leading-[0.9] text-center mt-2">
+            {step === 'form' ? 'Sign up.' : 'Verify.'}
+          </h1>
+        </header>
 
-            {step === 'form' ? (
-              <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-muted-foreground" htmlFor="name">
-                  Full name
-                </label>
-                <Input
-                  id="name"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Alex Taylor"
-                  required
-                  autoComplete="name"
-                />
-              </div>
+        {error && (
+          <div className="border-b-2 border-destructive py-3 px-3 font-mono text-[11px] tracking-[0.18em] text-destructive">
+            {error}
+          </div>
+        )}
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-muted-foreground" htmlFor="email">
-                  Email
-                </label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  required
-                  autoComplete="email"
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-muted-foreground" htmlFor="password">
-                  Password
-                </label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  required
-                  autoComplete="new-password"
-                />
-              </div>
-
-                <Button
-                  type="submit"
-                  className="w-full mt-2"
-                  disabled={isLoading}
-                >
-                  {isLoading ? 'Sending code…' : 'Create account'}
-                </Button>
-              </form>
-            ) : (
-              <form onSubmit={handleVerify} className="space-y-4">
-                <div className="space-y-1.5">
-                  <p className="text-xs text-muted-foreground">
-                    We&apos;ve sent a 6-digit code to <span className="font-medium">{pendingEmail || email}</span>.
-                    Enter it below to verify your email and start using Daymark.
-                  </p>
-                  {devOtp && (
-                    <p className="text-[10px] text-muted-foreground/80">
-                      Dev only: code is <span className="font-mono">{devOtp}</span>
-                    </p>
-                  )}
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-muted-foreground" htmlFor="otp">
-                    Verification code
-                  </label>
-                  <Input
-                    id="otp"
-                    type="text"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    maxLength={6}
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
-                    placeholder="123456"
-                    required
-                  />
-                </div>
-
-                <Button
-                  type="submit"
-                  className="w-full mt-2"
-                  disabled={isLoading}
-                >
-                  {isLoading ? 'Verifying…' : 'Verify & continue'}
-                </Button>
-              </form>
-            )}
-
-            <div className="relative my-2 text-center text-[10px] text-muted-foreground">
-              <span className="bg-background px-2 relative z-10">
-                Or sign up with
+        {step === 'form' ? (
+          <form onSubmit={handleSubmit} className="border-b-2 border-foreground">
+            <label htmlFor="name" className="block border-b-2 border-foreground px-5 py-4">
+              <span className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground block mb-2">NAME</span>
+              <input
+                id="name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Alex Taylor"
+                required
+                autoComplete="name"
+                className="w-full bg-transparent border-0 outline-none font-display text-2xl tracking-[-0.025em] placeholder:text-muted-foreground/40"
+              />
+            </label>
+            <label htmlFor="email" className="block border-b-2 border-foreground px-5 py-4">
+              <span className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground block mb-2">EMAIL</span>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                required
+                autoComplete="email"
+                className="w-full bg-transparent border-0 outline-none font-display text-2xl tracking-[-0.025em] placeholder:text-muted-foreground/40"
+              />
+            </label>
+            <label htmlFor="password" className="block border-b-2 border-foreground px-5 py-4">
+              <span className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground block mb-2">PASSWORD</span>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+                autoComplete="new-password"
+                className="w-full bg-transparent border-0 outline-none font-display text-2xl tracking-[-0.025em] placeholder:text-muted-foreground/40"
+              />
+            </label>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className={cn(
+                'w-full px-5 py-4 flex items-center justify-between gap-3 transition-colors group',
+                isLoading ? 'bg-muted text-muted-foreground cursor-not-allowed' : 'bg-foreground text-background hover:bg-foreground/85'
+              )}
+            >
+              <span className="font-display font-bold text-2xl tracking-[-0.025em]">
+                {isLoading ? 'Sending code…' : 'Create account'}
               </span>
-              <div className="absolute inset-x-0 top-1/2 -z-0 h-px bg-border" aria-hidden="true" />
+              <ArrowUpRight className="size-6 group-hover:rotate-12 transition-transform" />
+            </button>
+          </form>
+        ) : (
+          <form onSubmit={handleVerify} className="border-b-2 border-foreground">
+            <div className="px-5 py-4 border-b-2 border-foreground">
+              <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground">
+                CODE SENT TO <span className="text-foreground">{(pendingEmail || email).toUpperCase()}</span>
+              </p>
+              {devOtp && (
+                <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground mt-1">
+                  DEV: <span className="text-foreground">{devOtp}</span>
+                </p>
+              )}
             </div>
+            <label htmlFor="otp" className="block border-b-2 border-foreground px-5 py-4">
+              <span className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground block mb-2">VERIFICATION CODE</span>
+              <input
+                id="otp"
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                maxLength={6}
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                placeholder="123456"
+                required
+                className="w-full bg-transparent border-0 outline-none font-display text-3xl tracking-[0.2em] tabular-nums placeholder:text-muted-foreground/40"
+              />
+            </label>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className={cn(
+                'w-full px-5 py-4 flex items-center justify-between gap-3 transition-colors group',
+                isLoading ? 'bg-muted text-muted-foreground cursor-not-allowed' : 'bg-foreground text-background hover:bg-foreground/85'
+              )}
+            >
+              <span className="font-display font-bold text-2xl tracking-[-0.025em]">
+                {isLoading ? 'Verifying…' : 'Verify & continue'}
+              </span>
+              <ArrowUpRight className="size-6 group-hover:rotate-12 transition-transform" />
+            </button>
+          </form>
+        )}
 
-            <div className="space-y-2">
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full justify-center text-xs"
-                onClick={loginWithGoogle}
-              >
-                Continue with Google
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full justify-center text-xs"
-                onClick={loginWithGithub}
-              >
-                Continue with GitHub
-              </Button>
-            </div>
+        <div className="border-b-2 border-foreground grid grid-cols-2">
+          <button type="button" onClick={loginWithGoogle} className="px-5 py-4 font-mono text-[10px] tracking-[0.22em] hover:bg-muted transition-colors border-r-2 border-foreground">
+            GOOGLE
+          </button>
+          <button type="button" onClick={loginWithGithub} className="px-5 py-4 font-mono text-[10px] tracking-[0.22em] hover:bg-muted transition-colors">
+            GITHUB
+          </button>
+        </div>
 
-            <p className="pt-1 text-center text-xs text-muted-foreground">
-              Already have an account?{' '}
-              <Link href="/login" className="underline underline-offset-4">
-                Sign in
-              </Link>
-            </p>
-          </CardContent>
-        </Card>
-      </div>
+        <p className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground text-center py-5">
+          ALREADY A SUBSCRIBER?{' '}
+          <Link href="/login" className="text-foreground hover:opacity-80 underline underline-offset-4">
+            SIGN IN
+          </Link>
+        </p>
+      </BlurFade>
     </div>
   )
 }

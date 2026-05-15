@@ -1,5 +1,15 @@
 // TypeScript types that mirror the Go backend models
 
+export type Article = {
+  id: number
+  headline: string
+  summary: string
+  source: string
+  category: string
+  readTime: number
+  url: string
+}
+
 export type Category = {
   id: number
   name: string
@@ -70,6 +80,11 @@ export type QuizSession = {
   completed: boolean
   timerOption: string // 'none', '5', '10'
   timerSeconds: number // Remaining time in seconds
+}
+
+export type SubscribeRequest = {
+  email: string
+  category_ids: number[]
 }
 
 export type SaveQuizResultRequest = {

@@ -3,9 +3,12 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import { ArrowUpRight } from 'lucide-react'
 import { useAuth, useQuiz } from '@/lib/store'
-import { signIn, loginWithGoogle, loginWithGithub, generateQuiz, getToken } from '@/lib/api'
+import { signIn, loginWithGoogle, loginWithGithub, generateQuiz } from '@/lib/api'
 import type { QuizSession } from '@/lib/types'
+import { BlurFade } from '@/components/ui/blur-fade'
+import { cn } from '@/lib/utils'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -17,8 +20,6 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
-  // After OAuth redirect, the user lands back here authenticated.
-  // Read pendingQuiz from localStorage and auto-generate the quiz.
   const { isAuthenticated } = useAuth()
   useEffect(() => {
     if (!isAuthenticated) return
@@ -52,27 +53,20 @@ export default function LoginPage() {
     e.preventDefault()
     setError('')
     setIsLoading(true)
-
     try {
       const response = await signIn({ email, password })
       setAuth(response.user, response.token)
       const categoriesParam = searchParams.get('categories')
       const difficultyParam = searchParams.get('difficulty')
       const countParam = searchParams.get('count')
-
       if (categoriesParam && difficultyParam) {
-        const categoryIds = categoriesParam
-          .split(',')
-          .map(Number)
-          .filter(id => !Number.isNaN(id))
-
+        const categoryIds = categoriesParam.split(',').map(Number).filter(id => !Number.isNaN(id))
         try {
           const quiz = await generateQuiz({
             category_ids: categoryIds,
             difficulty: difficultyParam,
             number_of_questions: countParam ? Number(countParam) : 10,
           })
-
           const session: QuizSession = {
             quiz,
             currentIndex: 0,
@@ -82,7 +76,6 @@ export default function LoginPage() {
             timerOption: 'none',
             timerSeconds: 0,
           }
-
           setSession(session)
           router.push('/quiz')
         } catch (err) {
@@ -100,32 +93,24 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4 py-10">
-      <div className="w-full max-w-sm animate-slide-up">
-
-        {/* Header */}
-        <div className="mb-7 border-t-2 border-foreground pt-4">
-          <div className="flex items-center gap-2.5 mb-1">
-            <span className="w-0.5 h-5 bg-primary block" />
-            <span className="font-mono text-[10px] tracking-[0.22em] text-primary">DAYMARK</span>
-          </div>
-          <h1 className="font-display text-3xl text-foreground">Sign in</h1>
-          <p className="font-mono text-[11px] text-muted-foreground mt-1 tracking-wide">
-            Continue where you left off.
-          </p>
-        </div>
+    <div className="min-h-screen bg-background text-foreground flex items-center justify-center px-5 py-10">
+      <BlurFade inView className="w-full max-w-md">
+        <header className="border-y-2 border-foreground py-4 mb-0">
+          <div className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground text-center">SUBSCRIBER ENTRY</div>
+          <h1 className="font-display font-extrabold text-5xl md:text-6xl tracking-[-0.04em] leading-[0.9] text-center mt-2">
+            Sign in.
+          </h1>
+        </header>
 
         {error && (
-          <div className="mb-5 border-l-2 border-destructive bg-destructive/5 px-4 py-2.5 font-mono text-[11px] text-destructive">
+          <div className="border-b-2 border-destructive py-3 px-3 font-mono text-[11px] tracking-[0.18em] text-destructive">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4 mb-6">
-          <div className="space-y-1">
-            <label className="font-mono text-[10px] tracking-[0.18em] text-muted-foreground" htmlFor="email">
-              EMAIL
-            </label>
+        <form onSubmit={handleSubmit} className="border-b-2 border-foreground">
+          <label htmlFor="email" className="block border-b-2 border-foreground px-5 py-4">
+            <span className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground block mb-2">EMAIL</span>
             <input
               id="email"
               type="email"
@@ -134,13 +119,11 @@ export default function LoginPage() {
               placeholder="you@example.com"
               required
               autoComplete="email"
-              className="w-full bg-background border border-border px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none transition-colors font-mono"
+              className="w-full bg-transparent border-0 outline-none font-display text-2xl tracking-[-0.025em] placeholder:text-muted-foreground/40"
             />
-          </div>
-          <div className="space-y-1">
-            <label className="font-mono text-[10px] tracking-[0.18em] text-muted-foreground" htmlFor="password">
-              PASSWORD
-            </label>
+          </label>
+          <label htmlFor="password" className="block border-b-2 border-foreground px-5 py-4">
+            <span className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground block mb-2">PASSWORD</span>
             <input
               id="password"
               type="password"
@@ -149,48 +132,40 @@ export default function LoginPage() {
               placeholder="••••••••"
               required
               autoComplete="current-password"
-              className="w-full bg-background border border-border px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none transition-colors font-mono"
+              className="w-full bg-transparent border-0 outline-none font-display text-2xl tracking-[-0.025em] placeholder:text-muted-foreground/40"
             />
-          </div>
+          </label>
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full font-mono text-[11px] tracking-[0.18em] px-4 py-3 border border-primary bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-60 mt-1"
+            className={cn(
+              'w-full px-5 py-4 flex items-center justify-between gap-3 transition-colors group',
+              isLoading ? 'bg-muted text-muted-foreground cursor-not-allowed' : 'bg-foreground text-background hover:bg-foreground/85'
+            )}
           >
-            {isLoading ? 'SIGNING IN...' : 'SIGN IN →'}
+            <span className="font-display font-bold text-2xl tracking-[-0.025em]">
+              {isLoading ? 'Signing in…' : 'Continue'}
+            </span>
+            <ArrowUpRight className="size-6 group-hover:rotate-12 transition-transform" />
           </button>
         </form>
 
-        <div className="flex items-center gap-3 mb-5">
-          <div className="flex-1 h-px bg-border" />
-          <span className="font-mono text-[10px] text-muted-foreground tracking-widest">OR</span>
-          <div className="flex-1 h-px bg-border" />
-        </div>
-
-        <div className="space-y-2 mb-6">
-          <button
-            type="button"
-            onClick={loginWithGoogle}
-            className="w-full font-mono text-[11px] tracking-[0.14em] px-4 py-3 border border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground transition-colors"
-          >
+        <div className="border-b-2 border-foreground grid grid-cols-2">
+          <button type="button" onClick={loginWithGoogle} className="px-5 py-4 font-mono text-[10px] tracking-[0.22em] hover:bg-muted transition-colors border-r-2 border-foreground">
             CONTINUE WITH GOOGLE
           </button>
-          <button
-            type="button"
-            onClick={loginWithGithub}
-            className="w-full font-mono text-[11px] tracking-[0.14em] px-4 py-3 border border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground transition-colors"
-          >
+          <button type="button" onClick={loginWithGithub} className="px-5 py-4 font-mono text-[10px] tracking-[0.22em] hover:bg-muted transition-colors">
             CONTINUE WITH GITHUB
           </button>
         </div>
 
-        <p className="font-mono text-[10px] text-muted-foreground text-center tracking-wide">
+        <p className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground text-center py-5">
           NO ACCOUNT?{' '}
-          <Link href="/signup" className="text-primary hover:underline underline-offset-4">
+          <Link href="/signup" className="text-foreground hover:opacity-80 underline underline-offset-4">
             SIGN UP
           </Link>
         </p>
-      </div>
+      </BlurFade>
     </div>
   )
 }

@@ -3,25 +3,28 @@
 import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import { ArrowUpRight } from 'lucide-react'
 import { useAuth, useQuiz } from '@/lib/store'
 import { getCategories, generateQuiz } from '@/lib/api'
 import { Category, QuizSession } from '@/lib/types'
 import QuizContent from '@/components/quiz-content'
 import LoadingOverlay from '@/components/loading-overlay'
 import NavStrip from '@/components/nav-strip'
+import { BlurFade } from '@/components/ui/blur-fade'
+import { cn } from '@/lib/utils'
 
 const DIFFICULTIES = [
-  { id: 'easy', label: 'Easy' },
-  { id: 'medium', label: 'Medium' },
-  { id: 'hard', label: 'Hard' },
+  { id: 'easy', label: 'EASY', hint: '5-second pace' },
+  { id: 'medium', label: 'MEDIUM', hint: 'careful read' },
+  { id: 'hard', label: 'HARD', hint: 'edge cases' },
 ]
 
 const QUESTION_COUNTS = [5, 10, 15]
 
 const TIMER_OPTIONS = [
-  { id: 'none', label: 'No timer' },
-  { id: '5', label: '5 min' },
-  { id: '10', label: '10 min' },
+  { id: 'none', label: 'NO TIMER' },
+  { id: '5', label: '5 MIN' },
+  { id: '10', label: '10 MIN' },
 ]
 
 export default function QuizPage() {
@@ -44,12 +47,10 @@ export default function QuizPage() {
       try {
         const data = await getCategories()
         setCategories(data)
-
         const categoriesParam = searchParams.get('categories')
         const difficultyParam = searchParams.get('difficulty')
         const countParam = searchParams.get('count')
         const timerParam = searchParams.get('timer')
-
         if (categoriesParam) {
           setSelectedCategoryIds(categoriesParam.split(',').map(Number))
           if (difficultyParam) setSelectedDifficulty(difficultyParam)
@@ -85,7 +86,7 @@ export default function QuizPage() {
 
   const handleStart = async () => {
     if (!canStart) {
-      setError('Select at least one section and a difficulty level.')
+      setError('Select at least one section and a difficulty.')
       return
     }
     if (!isAuthenticated) {
@@ -128,177 +129,220 @@ export default function QuizPage() {
     }
   }
 
-  // Quiz in progress — show the quiz content
   if (session && !session.completed) {
     return (
       <div className="min-h-screen bg-background text-foreground">
         {isGenerating && <LoadingOverlay />}
         <NavStrip active="quiz" />
-        <div className="max-w-3xl mx-auto px-5 md:px-8 py-8">
-          <QuizContent />
+        <div className="px-5 md:px-10 py-8">
+          <div className="mx-auto w-full max-w-3xl">
+            <QuizContent />
+          </div>
         </div>
       </div>
     )
   }
 
-  // Builder
   return (
     <div className="min-h-screen bg-background text-foreground">
       {isGenerating && <LoadingOverlay />}
       <NavStrip active="quiz" />
 
-      <div className="max-w-3xl mx-auto px-5 md:px-8 py-8">
+      <main className="px-5 md:px-10 py-6">
+        <div className="mx-auto w-full max-w-5xl">
 
-        {error && (
-          <div className="mb-6 border-l-2 border-destructive bg-destructive/5 px-4 py-2.5 font-mono text-xs text-destructive">
-            {error}
-          </div>
-        )}
+          {/* Masthead */}
+          <BlurFade delay={0.05} inView>
+            <header className="border-y-2 border-foreground py-3 flex items-center justify-between flex-wrap gap-2">
+              <div className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground">SET UP YOUR EDITION</div>
+              <h1 className="font-display font-bold text-3xl md:text-4xl tracking-[-0.03em] leading-none">
+                Build a quiz.
+              </h1>
+              <div className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground">
+                STEP 1 / 4
+              </div>
+            </header>
+          </BlurFade>
 
-        <div className="space-y-7">
+          {error && (
+            <div className="border-b-2 border-destructive py-3 px-1 font-mono text-[11px] tracking-[0.18em] text-destructive">
+              {error}
+            </div>
+          )}
 
-          {/* Sections — in a box */}
-          <div>
-            <p className="font-mono text-[9px] tracking-[0.24em] text-muted-foreground mb-2">
-              SECTIONS
-            </p>
-            <div className="border border-border p-3">
-              {categoriesLoading ? (
-                <span className="font-mono text-[10px] text-muted-foreground animate-pulse">Loading…</span>
-              ) : (
-                <div className="flex flex-wrap gap-1.5">
-                  {categories.map((cat) => {
+          {/* SECTIONS */}
+          <BlurFade delay={0.15} inView>
+            <section className="border-b-2 border-foreground py-5 md:py-6 px-1">
+              <div className="flex items-baseline justify-between mb-3">
+                <h2 className="font-display font-bold text-xl md:text-2xl tracking-[-0.02em]">
+                  <span className="text-muted-foreground">01.</span> Pick your sections
+                </h2>
+                <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground">
+                  {selectedCategoryIds.length} SELECTED
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {categoriesLoading ? (
+                  <span className="font-mono text-[11px] tracking-[0.18em] text-muted-foreground animate-pulse">LOADING…</span>
+                ) : (
+                  categories.map((cat) => {
                     const sel = selectedCategoryIds.includes(cat.id)
                     return (
                       <button
                         key={cat.id}
                         type="button"
                         onClick={() => toggleCategory(cat.id)}
-                        className={`font-mono text-[10px] tracking-[0.14em] px-3 py-1 border transition-all duration-100 ${
+                        className={cn(
+                          'font-mono text-[10px] tracking-[0.16em] uppercase px-2.5 py-1.5 border-2 transition-all',
                           sel
                             ? 'border-foreground bg-foreground text-background'
-                            : 'border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground'
-                        }`}
+                            : 'border-foreground/20 text-muted-foreground hover:border-foreground hover:text-foreground'
+                        )}
                       >
-                        {cat.name.toUpperCase()}
+                        {cat.name}
                       </button>
                     )
-                  })}
-                </div>
+                  })
+                )}
+              </div>
+            </section>
+          </BlurFade>
+
+          {/* DIFFICULTY + COUNT + TIMER — 3 cols */}
+          <div className="grid md:grid-cols-3 gap-0 border-b-2 border-foreground">
+
+            <BlurFade delay={0.25} inView className="md:border-r-2 border-foreground p-4 md:p-5">
+              <h2 className="font-display font-bold text-lg md:text-xl tracking-[-0.02em] mb-0.5">
+                <span className="text-muted-foreground">02.</span> Difficulty
+              </h2>
+              <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground mb-3">HOW HARD?</p>
+              <div className="space-y-1">
+                {DIFFICULTIES.map((d) => {
+                  const sel = selectedDifficulty === d.id
+                  return (
+                    <button
+                      key={d.id}
+                      type="button"
+                      onClick={() => setSelectedDifficulty(d.id)}
+                      className={cn(
+                        'w-full flex items-center justify-between px-2.5 py-2 border-2 transition-all text-left',
+                        sel
+                          ? 'border-foreground bg-foreground text-background'
+                          : 'border-foreground/20 hover:border-foreground'
+                      )}
+                    >
+                      <span className="font-mono text-[10px] tracking-[0.18em] font-medium">{d.label}</span>
+                      <span className={cn('font-mono text-[9px] tracking-[0.14em]', sel ? 'text-background/70' : 'text-muted-foreground')}>
+                        {d.hint}
+                      </span>
+                    </button>
+                  )
+                })}
+              </div>
+            </BlurFade>
+
+            <BlurFade delay={0.35} inView className="md:border-r-2 border-foreground p-4 md:p-5 border-t-2 md:border-t-0 border-foreground">
+              <h2 className="font-display font-bold text-lg md:text-xl tracking-[-0.02em] mb-0.5">
+                <span className="text-muted-foreground">03.</span> Questions
+              </h2>
+              <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground mb-3">HOW MANY?</p>
+              <div className="grid grid-cols-3 gap-1">
+                {QUESTION_COUNTS.map((count) => {
+                  const sel = questionCount === count
+                  return (
+                    <button
+                      key={count}
+                      type="button"
+                      onClick={() => setQuestionCount(count)}
+                      className={cn(
+                        'py-3.5 border-2 transition-all text-center',
+                        sel
+                          ? 'border-foreground bg-foreground text-background'
+                          : 'border-foreground/20 hover:border-foreground'
+                      )}
+                    >
+                      <p className="font-display font-bold text-xl tracking-[-0.02em] tabular-nums">{count}</p>
+                    </button>
+                  )
+                })}
+              </div>
+            </BlurFade>
+
+            <BlurFade delay={0.45} inView className="p-4 md:p-5 border-t-2 md:border-t-0 border-foreground">
+              <h2 className="font-display font-bold text-lg md:text-xl tracking-[-0.02em] mb-0.5">
+                <span className="text-muted-foreground">04.</span> Timer
+              </h2>
+              <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground mb-3">RACE THE CLOCK?</p>
+              <div className="space-y-1">
+                {TIMER_OPTIONS.map((opt) => {
+                  const sel = timerOption === opt.id
+                  return (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => setTimerOption(opt.id)}
+                      className={cn(
+                        'w-full px-2.5 py-2 border-2 transition-all text-left',
+                        sel
+                          ? 'border-foreground bg-foreground text-background'
+                          : 'border-foreground/20 hover:border-foreground'
+                      )}
+                    >
+                      <span className="font-mono text-[10px] tracking-[0.18em] font-medium">{opt.label}</span>
+                    </button>
+                  )
+                })}
+              </div>
+            </BlurFade>
+          </div>
+
+          {/* START BAR */}
+          <BlurFade delay={0.55} inView>
+            <section className="grid md:grid-cols-12 gap-0 border-b-2 border-foreground">
+              <div className="md:col-span-7 p-4 md:p-5 md:border-r-2 border-foreground flex flex-col justify-center">
+                <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground mb-1.5">YOUR EDITION</p>
+                <p className="font-display font-semibold text-lg md:text-xl tracking-[-0.02em] leading-snug">
+                  {selectedCategoryIds.length > 0 ? `${selectedCategoryIds.length} section${selectedCategoryIds.length > 1 ? 's' : ''}` : 'Pick at least one section'}
+                  {selectedDifficulty && <span className="text-muted-foreground">, {selectedDifficulty}</span>}
+                  <span className="text-muted-foreground">, {questionCount} questions</span>
+                  {timerOption !== 'none' && <span className="text-muted-foreground">, {timerOption}-min timer</span>}
+                  .
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={handleStart}
+                disabled={!canStart || isGenerating}
+                className={cn(
+                  'md:col-span-5 p-4 md:p-5 flex items-center justify-between gap-3 transition-colors group',
+                  canStart && !isGenerating
+                    ? 'bg-foreground text-background hover:bg-foreground/85 cursor-pointer'
+                    : 'bg-muted text-muted-foreground/60 cursor-not-allowed'
+                )}
+              >
+                <span className="font-display font-bold text-xl md:text-2xl tracking-[-0.02em] text-left">
+                  {isGenerating ? 'Generating…' : 'Begin quiz'}
+                </span>
+                <ArrowUpRight className="size-5 md:size-6 group-hover:rotate-12 transition-transform shrink-0" />
+              </button>
+            </section>
+          </BlurFade>
+
+          <BlurFade delay={0.7} inView>
+            <footer className="py-3 flex items-center justify-between flex-wrap gap-2">
+              <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground">
+                NEW QUESTIONS GENERATED EVERY RUN
+              </p>
+              {!isAuthenticated && (
+                <Link href="/login" className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2">
+                  SIGN IN TO SAVE STREAKS <ArrowUpRight className="size-3" />
+                </Link>
               )}
-            </div>
-          </div>
-
-          {/* Difficulty */}
-          <div className="flex items-center gap-6">
-            <span className="font-mono text-[9px] tracking-[0.24em] text-muted-foreground w-24 shrink-0">
-              DIFFICULTY
-            </span>
-            <div className="flex gap-1.5">
-              {DIFFICULTIES.map((d) => {
-                const sel = selectedDifficulty === d.id
-                return (
-                  <button
-                    key={d.id}
-                    type="button"
-                    onClick={() => setSelectedDifficulty(d.id)}
-                    className={`font-mono text-[10px] tracking-[0.14em] px-3 py-1 border transition-all duration-100 ${
-                      sel
-                        ? 'border-foreground bg-foreground text-background'
-                        : 'border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground'
-                    }`}
-                  >
-                    {d.label.toUpperCase()}
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-
-          {/* Questions */}
-          <div className="flex items-center gap-6">
-            <span className="font-mono text-[9px] tracking-[0.24em] text-muted-foreground w-24 shrink-0">
-              QUESTIONS
-            </span>
-            <div className="flex gap-1.5">
-              {QUESTION_COUNTS.map((count) => {
-                const sel = questionCount === count
-                return (
-                  <button
-                    key={count}
-                    type="button"
-                    onClick={() => setQuestionCount(count)}
-                    className={`font-mono text-[10px] tracking-[0.14em] px-3 py-1 border transition-all duration-100 ${
-                      sel
-                        ? 'border-foreground bg-foreground text-background'
-                        : 'border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground'
-                    }`}
-                  >
-                    {count}
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-
-          {/* Timer */}
-          <div className="flex items-center gap-6">
-            <span className="font-mono text-[9px] tracking-[0.24em] text-muted-foreground w-24 shrink-0">
-              TIMER
-            </span>
-            <div className="flex gap-1.5">
-              {TIMER_OPTIONS.map((opt) => {
-                const sel = timerOption === opt.id
-                return (
-                  <button
-                    key={opt.id}
-                    type="button"
-                    onClick={() => setTimerOption(opt.id)}
-                    className={`font-mono text-[10px] tracking-[0.14em] px-3 py-1 border transition-all duration-100 ${
-                      sel
-                        ? 'border-foreground bg-foreground text-background'
-                        : 'border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground'
-                    }`}
-                  >
-                    {opt.label.toUpperCase()}
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-
-          {/* CTA */}
-          <div className="pt-2 flex items-center gap-5 border-t border-border">
-            <button
-              type="button"
-              onClick={handleStart}
-              disabled={!canStart || isGenerating}
-              className={`mt-5 font-mono text-[11px] tracking-[0.2em] px-8 py-3 border transition-all duration-150 ${
-                canStart && !isGenerating
-                  ? 'border-primary bg-primary text-primary-foreground hover:bg-primary/90'
-                  : 'border-border text-muted-foreground/40 cursor-not-allowed'
-              }`}
-            >
-              {isGenerating ? 'GENERATING...' : 'BEGIN →'}
-            </button>
-
-            {canStart && (
-              <span className="mt-5 font-mono text-[10px] text-muted-foreground">
-                {selectedCategoryIds.length} section{selectedCategoryIds.length > 1 ? 's' : ''}
-                {' '}· {selectedDifficulty} · {questionCount} q
-              </span>
-            )}
-          </div>
-
-          {!isAuthenticated && (
-            <p className="font-mono text-[9px] text-muted-foreground">
-              <Link href="/login" className="text-primary hover:underline underline-offset-4">Sign in</Link>
-              {' '}to save streaks and review past results.
-            </p>
-          )}
+            </footer>
+          </BlurFade>
 
         </div>
-      </div>
+      </main>
     </div>
   )
 }

@@ -95,7 +95,7 @@ export default function ResultsContent() {
 
           {/* Score — editorial headline */}
           <div className="text-center py-8 border border-border">
-            <div className="font-display text-7xl md:text-8xl text-foreground mb-3 tracking-tight">
+            <div className="font-semibold tracking-tight text-7xl md:text-8xl text-foreground mb-3 tracking-tight">
               {score}<span className="text-muted-foreground/40 text-5xl md:text-6xl"> / {total}</span>
             </div>
             <div className="font-mono text-xs tracking-[0.25em] text-primary mb-1">{label}</div>

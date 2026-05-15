@@ -29,7 +29,7 @@ export default function AboutPage() {
             {/* Col 1 — Editorial content */}
             <div className="flex-[6] border-b md:border-b-0 md:border-r border-border py-8 md:pr-10">
 
-              <h1 className="font-display text-4xl md:text-5xl leading-[1.06] text-foreground mb-6">
+              <h1 className="font-semibold tracking-tight text-4xl md:text-5xl leading-[1.06] text-foreground mb-6">
                 Built for people who<br />
                 <span className="text-primary italic">actually read the news.</span>
               </h1>

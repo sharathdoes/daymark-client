@@ -68,12 +68,12 @@ export default function ProfilePage() {
                     src={user?.avatar_url || `https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(user?.email || 'user')}`}
                     alt={user?.name || 'Profile'}
                   />
-                  <AvatarFallback className="font-display text-xl bg-muted">
+                  <AvatarFallback className="font-semibold tracking-tight text-xl bg-muted">
                     {(user?.name || user?.email || '?').charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <h1 className="font-display text-3xl text-foreground">
+                  <h1 className="font-semibold tracking-tight text-3xl text-foreground">
                     {isLoading ? '...' : user?.name || 'Reader'}
                   </h1>
                   <p className="font-mono text-[10px] tracking-[0.18em] text-muted-foreground mt-1">
@@ -112,7 +112,7 @@ export default function ProfilePage() {
                 { label: 'BEST SCORE', value: `${bestScore}%` },
               ].map((stat) => (
                 <div key={stat.label} className="px-4 py-5 text-center">
-                  <p className="font-display text-4xl text-foreground">{stat.value}</p>
+                  <p className="font-semibold tracking-tight text-4xl text-foreground">{stat.value}</p>
                   <p className="font-mono text-[10px] tracking-[0.16em] text-muted-foreground mt-1">{stat.label}</p>
                 </div>
               ))}

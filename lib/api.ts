@@ -1,4 +1,5 @@
 import {
+  Article,
   Category,
   Quiz,
   User,
@@ -6,113 +7,18 @@ import {
   SignInRequest,
   AuthResponse,
   GenerateQuizRequest,
-  Question,
   UserQuizResult,
   SaveQuizResultRequest,
+  SubscribeRequest,
 } from './types'
 
-const BASE_URL = "https://alright-bev-lumaai-69a46e17.koyeb.app";
+const BASE_URL = "http://localhost:8080";
 
-const delay = (ms: number) => new Promise(res => setTimeout(res, ms))
-
-// Mock data
-const MOCK_CATEGORIES: Category[] = [
-  { id: 1, name: 'Sports', slug: 'sports' },
-  { id: 2, name: 'Politics', slug: 'politics' },
-  { id: 3, name: 'Technology', slug: 'technology' },
-  { id: 4, name: 'World', slug: 'world' },
-  { id: 5, name: 'Business', slug: 'business' },
-  { id: 6, name: 'Science', slug: 'science' },
-  { id: 7, name: 'Entertainment', slug: 'entertainment' },
-  { id: 8, name: 'Health', slug: 'health' },
-]
-
-const MOCK_QUESTIONS: Question[] = [
-  {
-    question: 'Who won the IPL 2024 title?',
-    options: ['Mumbai Indians', 'Kolkata Knight Riders', 'Chennai Super Kings', 'RCB'],
-    answer: 1,
-    article_url: 'https://thehindu.com/sport/cricket/ipl-2024',
-  },
-  {
-    question: "What is ISRO's solar observation mission called?",
-    options: ['Surya-1', 'Aditya-L1', 'SolarEx', 'Helios-1'],
-    answer: 1,
-    article_url: 'https://thehindu.com/sci-tech/isro-aditya-l1',
-  },
-  {
-    question: 'Which city hosted the G20 Summit in 2023?',
-    options: ['Mumbai', 'New Delhi', 'Bengaluru', 'Chennai'],
-    answer: 1,
-    article_url: 'https://indianexpress.com/g20-india-summit',
-  },
-  {
-    question: 'Who was appointed Chief Justice of India in late 2024?',
-    options: ['D.Y. Chandrachud', 'Sanjiv Khanna', 'B.R. Gavai', 'Abhay Oka'],
-    answer: 1,
-    article_url: 'https://indianexpress.com/new-chief-justice-india',
-  },
-  {
-    question: "What was India's Republic Day 2024 theme?",
-    options: ['Viksit Bharat', 'Digital India', 'Atmanirbhar Bharat', 'Incredible India'],
-    answer: 0,
-    article_url: 'https://thehindu.com/republic-day-2024',
-  },
-  {
-    question: "Who won the 2024 Wimbledon Men's Singles?",
-    options: ['Novak Djokovic', 'Carlos Alcaraz', 'Jannik Sinner', 'Rafael Nadal'],
-    answer: 1,
-    article_url: 'https://timesofindia.com/sports/tennis/wimbledon-2024',
-  },
-  {
-    question: 'Which Indian athlete won gold at Paris Olympics 2024?',
-    options: ['Neeraj Chopra', 'PV Sindhu', 'Mirabai Chanu', 'Bajrang Punia'],
-    answer: 0,
-    article_url: 'https://indianexpress.com/paris-olympics-india-gold',
-  },
-  {
-    question: 'What is Operation Sindoor?',
-    options: [
-      'Flood relief in Assam',
-      'Military strikes on Pakistan terror camps',
-      'A cybersecurity initiative',
-      'A highway project',
-    ],
-    answer: 1,
-    article_url: 'https://timesofindia.com/india/operation-sindoor',
-  },
-  {
-    question: "Which company became India's most valued startup in 2024?",
-    options: ['Zepto', 'PhonePe', 'Razorpay', "BYJU'S"],
-    answer: 1,
-    article_url: 'https://timesofindia.com/business/india-startup-valuation',
-  },
-  {
-    question: 'Which country did India sign a Free Trade Agreement with in 2024?',
-    options: ['Australia', 'UAE', 'UK', 'Germany'],
-    answer: 2,
-    article_url: 'https://timesofindia.com/india-uk-fta',
-  },
-]
-
-const MOCK_QUIZ: Quiz = {
-  id: 1,
-  title: 'Daily Digest',
-  category_ids: [1, 3],
-  difficulty: 'medium',
-  created_at: new Date().toISOString(),
-  questions: MOCK_QUESTIONS,
-}
-
-const MOCK_USER: User = {
-  id: '550e8400-e29b-41d4-a716-446655440000',
-  name: 'Arjun Sharma',
-  email: 'arjun@example.com',
-  provider: 'email',
-  provider_id: '',
-  avatar_url: '',
-  created_at: new Date().toISOString(),
-  updated_at: new Date().toISOString(),
+// GET /articles/today
+export async function getTodayArticles(): Promise<Article[]> {
+  const res = await fetch(`${BASE_URL}/articles/today`)
+  if (!res.ok) throw new Error('Failed to fetch today\'s articles')
+  return res.json()
 }
 
 // GET /category/
@@ -210,6 +116,30 @@ export async function getQuizHistory(): Promise<UserQuizResult[]> {
     },
   })
   if (!res.ok) throw new Error('Failed to fetch quiz history')
+  return res.json()
+}
+
+// POST /subscribe
+export async function subscribe(req: SubscribeRequest): Promise<{ message: string }> {
+  const res = await fetch(`${BASE_URL}/subscribe`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(req),
+  })
+  if (!res.ok) {
+    let message = 'Failed to subscribe'
+    try {
+      const data = await res.json()
+      if (data && typeof data === 'object' && 'error' in data && typeof (data as any).error === 'string') {
+        message = (data as any).error
+      }
+    } catch {
+      // ignore
+    }
+    throw new Error(message)
+  }
   return res.json()
 }
 

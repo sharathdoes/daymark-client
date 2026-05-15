@@ -74,7 +74,7 @@ export default function DailyQuizPage() {
               <span className="font-mono text-[10px] tracking-[0.18em] text-muted-foreground">{todayFormatted}</span>
             </div>
             <div className="border-t-2 border-foreground pt-4">
-              <h1 className="font-display text-4xl md:text-5xl leading-tight text-foreground mb-3">
+              <h1 className="font-semibold tracking-tight text-4xl md:text-5xl leading-tight text-foreground mb-3">
                 Today&apos;s<br />Quiz of the Day
               </h1>
               <p className="text-sm text-muted-foreground border-l-2 border-border pl-4 leading-relaxed">
@@ -96,7 +96,7 @@ export default function DailyQuizPage() {
           ) : quiz === null ? (
             <div className="animate-slide-up border border-border p-8 text-center space-y-4">
               <p className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground">NOT YET AVAILABLE</p>
-              <p className="font-display text-2xl text-foreground">No quiz for today — yet.</p>
+              <p className="font-semibold tracking-tight text-2xl text-foreground">No quiz for today — yet.</p>
               <p className="text-sm text-muted-foreground">
                 Today&apos;s quiz is generated every day at <strong className="text-foreground">6:00 AM IST</strong>. Check back soon.
               </p>
@@ -131,7 +131,7 @@ export default function DailyQuizPage() {
                     { label: 'CATEGORIES', value: quiz.category_ids?.length ?? '—' },
                   ].map((stat) => (
                     <div key={stat.label} className="px-5 py-4 text-center">
-                      <p className="font-display text-3xl text-foreground">{stat.value}</p>
+                      <p className="font-semibold tracking-tight text-3xl text-foreground">{stat.value}</p>
                       <p className="font-mono text-[10px] tracking-[0.16em] text-muted-foreground mt-1">{stat.label}</p>
                     </div>
                   ))}

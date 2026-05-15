@@ -1,26 +1,16 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Sans, IBM_Plex_Mono, DM_Serif_Display } from "next/font/google";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
+import { Bricolage_Grotesque } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import Sidebar from "@/components/sidebar";
 import RootLayoutClient from "@/components/root-layout-client";
 import "./globals.css";
 
-const ibmPlexSans = IBM_Plex_Sans({
-  weight: ["300", "400", "500", "600"],
+const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
-  variable: "--font-ibm-plex-sans",
-});
-
-const ibmPlexMono = IBM_Plex_Mono({
-  weight: ["400", "500", "600"],
-  subsets: ["latin"],
-  variable: "--font-ibm-plex-mono",
-});
-
-const dmSerifDisplay = DM_Serif_Display({
-  weight: ["400"],
-  subsets: ["latin"],
-  variable: "--font-dm-serif-display",
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-bricolage",
 });
 
 export const metadata: Metadata = {
@@ -35,10 +25,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${ibmPlexSans.variable} ${ibmPlexMono.variable} ${dmSerifDisplay.variable} font-sans antialiased`}>
+      <body className={`${GeistSans.variable} ${GeistMono.variable} ${bricolage.variable} font-sans antialiased`}>
         <RootLayoutClient>
           <Sidebar />
-          <div className="md:pl-10">
+          <div className="md:pl-12">
             {children}
             <Analytics />
           </div>

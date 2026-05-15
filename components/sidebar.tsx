@@ -13,11 +13,11 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Desktop — vertical spine */}
+      {/* Desktop spine */}
       <aside className="fixed left-0 top-0 bottom-0 w-10 border-r border-border hidden md:flex flex-col items-center py-5 z-40 bg-background">
         <Link href="/" className="group flex items-center justify-center">
           <span
-            className="font-mono text-[9px] tracking-[0.2em] text-muted-foreground group-hover:text-foreground transition-colors select-none"
+            className="font-mono text-[9px] tracking-[0.22em] text-muted-foreground group-hover:text-foreground transition-colors select-none"
             style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
           >
             DAYMARK
@@ -33,7 +33,7 @@ export default function Sidebar() {
             aria-label="Toggle theme"
             className="text-muted-foreground hover:text-foreground transition-colors"
           >
-            {isDark ? <Sun size={12} /> : <Moon size={12} />}
+            {isDark ? <Sun size={13} /> : <Moon size={13} />}
           </button>
 
           {isAuthenticated && user ? (
@@ -55,7 +55,7 @@ export default function Sidebar() {
                 aria-label="Sign out"
                 className="text-muted-foreground hover:text-foreground transition-colors"
               >
-                <LogOut size={11} />
+                <LogOut size={12} />
               </button>
             </>
           ) : (
@@ -71,10 +71,10 @@ export default function Sidebar() {
         </div>
       </aside>
 
-      {/* Mobile — minimal top strip */}
+      {/* Mobile top strip */}
       <div className="md:hidden flex items-center justify-between px-5 py-3 border-b border-border bg-background">
-        <Link href="/" className="font-mono text-[11px] tracking-[0.2em] text-foreground hover:text-primary transition-colors">
-          DAYMARK
+        <Link href="/" className="font-semibold text-sm tracking-tight hover:opacity-80 transition-opacity">
+          Daymark
         </Link>
         <div className="flex items-center gap-3">
           <button
@@ -82,11 +82,11 @@ export default function Sidebar() {
             onClick={() => setIsDark(!isDark)}
             className="text-muted-foreground hover:text-foreground transition-colors"
           >
-            {isDark ? <Sun size={13} /> : <Moon size={13} />}
+            {isDark ? <Sun size={14} /> : <Moon size={14} />}
           </button>
           {isAuthenticated && user ? (
             <Link href="/profile">
-              <Avatar className="h-5 w-5">
+              <Avatar className="h-6 w-6">
                 <AvatarImage
                   src={user.avatar_url || `https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(user.email || 'user')}`}
                   alt={user.name || user.email || 'User'}
@@ -97,8 +97,8 @@ export default function Sidebar() {
               </Avatar>
             </Link>
           ) : (
-            <Link href="/login" className="font-mono text-[10px] tracking-wide text-muted-foreground hover:text-foreground transition-colors">
-              SIGN IN
+            <Link href="/login" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+              Sign in
             </Link>
           )}
         </div>

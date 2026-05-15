@@ -1,178 +1,220 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { ExternalLink } from 'lucide-react'
+import { ExternalLink, ArrowUpRight } from 'lucide-react'
 import NavStrip from '@/components/nav-strip'
+import { BlurFade } from '@/components/ui/blur-fade'
+import { getTodayArticles } from '@/lib/api'
+import { Article } from '@/lib/types'
+import { cn } from '@/lib/utils'
 
-interface Article {
-  id: number
-  source: string
-  category: string
-  headline: string
-  summary: string
-  readTime: string
-}
-
-const DEMO_ARTICLES: Article[] = [
-  {
-    id: 1,
-    source: 'BBC News',
-    category: 'Politics',
-    headline: 'Parliament approves sweeping economic reforms after three-day debate',
-    summary: 'MPs voted 312 to 289 in favour of the Economic Reform Bill, introducing new capital requirements for high-street banks and a regulatory framework for digital assets. The legislation is expected to come into force by the third quarter.',
-    readTime: '4 min',
-  },
-  {
-    id: 2,
-    source: 'The Guardian',
-    category: 'Climate',
-    headline: 'Arctic sea ice reaches record low for April, scientists warn',
-    summary: 'Satellite measurements show Arctic sea ice extent at its lowest recorded level for this time of year, 18% below the 1981–2010 average. Researchers say the trend accelerates projections for ice-free Arctic summers.',
-    readTime: '3 min',
-  },
-  {
-    id: 3,
-    source: 'Reuters',
-    category: 'Business',
-    headline: 'Central bank holds rates steady as inflation edges toward target',
-    summary: "The Monetary Policy Committee voted 7–2 to maintain the base rate at 4.5%, citing progress toward the 2% inflation target. Two members dissented in favour of a 25 basis-point cut.",
-    readTime: '3 min',
-  },
-  {
-    id: 4,
-    source: 'The Verge',
-    category: 'Technology',
-    headline: 'Major semiconductor firm announces breakthrough in 2nm chip design',
-    summary: 'The company unveiled a fabrication process that improves energy efficiency by 35% over the previous generation while maintaining performance gains. Mass production is targeted for late next year.',
-    readTime: '5 min',
-  },
-  {
-    id: 5,
-    source: 'Al Jazeera',
-    category: 'World',
-    headline: 'UN Security Council adopts resolution on ceasefire monitoring',
-    summary: 'The council passed a resolution 13–0, with two abstentions, establishing an independent monitoring mission of 200 unarmed observers to be deployed within 30 days.',
-    readTime: '4 min',
-  },
-  {
-    id: 6,
-    source: 'NPR',
-    category: 'Science',
-    headline: 'NASA confirms water ice in permanently shadowed craters near lunar south pole',
-    summary: 'Data from the Lunar Reconnaissance Orbiter confirms water ice deposits in craters that have not seen sunlight in billions of years. Scientists estimate the reserves could support sustained human presence on the Moon.',
-    readTime: '3 min',
-  },
-  {
-    id: 7,
-    source: 'AP',
-    category: 'Health',
-    headline: 'WHO warns of rising antimicrobial resistance in hospital settings globally',
-    summary: 'A new WHO report identifies drug-resistant infections as a leading cause of preventable hospital deaths. The agency is calling for stricter antibiotic stewardship programmes and accelerated vaccine development.',
-    readTime: '4 min',
-  },
-  {
-    id: 8,
-    source: 'Ars Technica',
-    category: 'Technology',
-    headline: 'Open-source LLM achieves parity with proprietary models on key benchmarks',
-    summary: 'Researchers released a 70-billion parameter model trained on publicly available datasets that matches commercial counterparts on coding and reasoning tasks. Model weights and training code are freely available.',
-    readTime: '6 min',
-  },
-]
-
-const ARTICLE_CATEGORIES = Array.from(new Set(DEMO_ARTICLES.map(a => a.category)))
+const today = new Date()
+const todayLong = today.toLocaleDateString('en-US', {
+  weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+}).toUpperCase()
 
 export default function TodayPage() {
+  const [articles, setArticles] = useState<Article[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const [filter, setFilter] = useState<string | null>(null)
 
-  const articles = filter
-    ? DEMO_ARTICLES.filter(a => a.category === filter)
-    : DEMO_ARTICLES
+  useEffect(() => {
+    getTodayArticles()
+      .then(setArticles)
+      .catch(() => setError("Could not load today's articles."))
+      .finally(() => setLoading(false))
+  }, [])
+
+  const categories = Array.from(new Set(articles.map(a => a.category)))
+  const filtered = filter ? articles.filter(a => a.category === filter) : articles
+  const lead = filtered[0]
+  const rest = filtered.slice(1)
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <NavStrip active="today" />
 
-      <div className="max-w-3xl mx-auto px-5 md:px-8 py-8">
+      <main className="px-5 md:px-10 py-6">
+        <div className="mx-auto w-full max-w-6xl">
 
-        {/* Category filter */}
-        <div className="flex flex-wrap gap-1.5 mb-8">
-          <button
-            type="button"
-            onClick={() => setFilter(null)}
-            className={`font-mono text-[10px] tracking-[0.16em] px-3 py-1 border transition-all duration-100 ${
-              filter === null
-                ? 'border-foreground bg-foreground text-background'
-                : 'border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground'
-            }`}
-          >
-            ALL
-          </button>
-          {ARTICLE_CATEGORIES.map(cat => (
-            <button
-              key={cat}
-              type="button"
-              onClick={() => setFilter(filter === cat ? null : cat)}
-              className={`font-mono text-[10px] tracking-[0.16em] px-3 py-1 border transition-all duration-100 ${
-                filter === cat
-                  ? 'border-foreground bg-foreground text-background'
-                  : 'border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground'
-              }`}
-            >
-              {cat.toUpperCase()}
-            </button>
-          ))}
-        </div>
-
-        {/* Article list */}
-        <div>
-          {articles.map((article, i) => (
-            <div key={article.id} className={`py-6 ${i > 0 ? 'border-t border-border' : ''}`}>
-              <div className="flex items-baseline justify-between gap-4 mb-2">
-                <div className="flex items-baseline gap-3">
-                  <span className="font-mono text-[9px] tracking-[0.2em] text-muted-foreground">
-                    {article.source.toUpperCase()}
-                  </span>
-                  <span className="text-border text-[9px]">·</span>
-                  <span className="font-mono text-[9px] tracking-[0.2em] text-primary">
-                    {article.category.toUpperCase()}
-                  </span>
-                </div>
-                <span className="font-mono text-[9px] text-muted-foreground/60 shrink-0">
-                  {article.readTime}
-                </span>
+          {/* Section masthead */}
+          <BlurFade delay={0.05} inView>
+            <header className="border-y-2 border-foreground py-4 flex items-end justify-between flex-wrap gap-3">
+              <div className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground">{todayLong}</div>
+              <h1 className="font-display font-extrabold text-5xl md:text-7xl tracking-[-0.04em] leading-[0.9] order-1 md:order-none w-full md:w-auto text-center mt-1">
+                Today's Read.
+              </h1>
+              <div className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground">
+                {articles.length} STORIES
               </div>
+            </header>
+          </BlurFade>
 
-              <h2 className="font-display text-lg md:text-xl leading-snug text-foreground mb-2">
-                {article.headline}
-              </h2>
+          {/* Filter strip */}
+          {!loading && !error && categories.length > 0 && (
+            <BlurFade delay={0.2} inView>
+              <div className="border-b-2 border-foreground py-3 flex items-center gap-1 overflow-x-auto">
+                <span className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground shrink-0 pr-3 border-r border-border mr-2">
+                  SECTIONS
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setFilter(null)}
+                  className={cn(
+                    'shrink-0 font-mono text-[10px] tracking-[0.18em] uppercase px-2.5 py-1 transition-colors',
+                    filter === null ? 'bg-foreground text-background' : 'text-muted-foreground hover:text-foreground'
+                  )}
+                >
+                  All
+                </button>
+                {categories.map(cat => (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setFilter(filter === cat ? null : cat)}
+                    className={cn(
+                      'shrink-0 font-mono text-[10px] tracking-[0.18em] uppercase px-2.5 py-1 transition-colors',
+                      filter === cat ? 'bg-foreground text-background' : 'text-muted-foreground hover:text-foreground'
+                    )}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </BlurFade>
+          )}
 
-              <p className="text-sm text-muted-foreground leading-relaxed mb-3">
-                {article.summary}
-              </p>
-
-              <Link
-                href="/quiz"
-                className="inline-flex items-center gap-1.5 font-mono text-[9px] tracking-[0.16em] text-muted-foreground hover:text-primary transition-colors"
-              >
-                <ExternalLink size={10} />
-                QUIZ ON THIS TOPIC
-              </Link>
+          {loading && (
+            <div className="py-32 text-center font-mono text-[11px] uppercase tracking-[0.3em] text-muted-foreground animate-pulse">
+              Loading edition…
             </div>
-          ))}
-        </div>
+          )}
 
-        <div className="border-t border-border pt-6 mt-2">
-          <p className="font-mono text-[9px] tracking-wide text-muted-foreground/50">
-            Summaries generated from RSS feeds scraped daily.{' '}
-            <Link href="/about" className="hover:text-muted-foreground transition-colors underline underline-offset-4">
-              How it works →
-            </Link>
-          </p>
-        </div>
+          {error && (
+            <div className="py-24 text-center font-mono text-[11px] tracking-[0.22em] text-destructive">
+              {error}
+            </div>
+          )}
 
-      </div>
+          {!loading && !error && filtered.length === 0 && (
+            <div className="py-24 text-center">
+              <h3 className="font-display text-3xl font-semibold mb-2">No stories yet.</h3>
+              <p className="text-sm text-muted-foreground">Check back later — feeds run on a schedule.</p>
+            </div>
+          )}
+
+          {/* LEAD STORY */}
+          {!loading && !error && lead && (
+            <BlurFade delay={0.3} inView>
+              <article className="grid md:grid-cols-12 gap-0 border-b-2 border-foreground group">
+                <div className="md:col-span-7 p-6 md:p-10 md:border-r-2 border-foreground">
+                  <div className="flex items-center gap-3 mb-5">
+                    <span className="font-mono text-[10px] tracking-[0.22em] bg-foreground text-background px-2 py-1">
+                      LEAD STORY
+                    </span>
+                    <span className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground">
+                      {lead.category?.toUpperCase()}
+                    </span>
+                  </div>
+                  <h2 className="font-display font-bold leading-[0.95] tracking-[-0.035em] text-[clamp(2rem,4.5vw,3.75rem)] mb-6">
+                    {lead.headline}
+                  </h2>
+                  <p className="text-base text-muted-foreground leading-relaxed max-w-prose mb-6">
+                    {lead.summary}
+                  </p>
+                  <div className="flex items-center gap-5 font-mono text-[10px] tracking-[0.18em] text-muted-foreground">
+                    <span>{lead.source?.toUpperCase()}</span>
+                    <span>·</span>
+                    <span>{lead.readTime} MIN READ</span>
+                    {lead.url && (
+                      <>
+                        <span>·</span>
+                        <a href={lead.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors">
+                          ORIGINAL <ExternalLink className="size-3" />
+                        </a>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <Link
+                  href="/quiz"
+                  className="md:col-span-5 bg-foreground text-background p-6 md:p-10 flex flex-col justify-between hover:bg-foreground/90 transition-colors group min-h-[200px]"
+                >
+                  <div>
+                    <p className="font-mono text-[10px] tracking-[0.22em] text-background/70 mb-4">QUIZ HOOK</p>
+                    <p className="font-display font-semibold text-2xl md:text-3xl leading-[1.05] tracking-[-0.02em]">
+                      Could you answer 3 questions about this story without re-reading it?
+                    </p>
+                  </div>
+                  <span className="inline-flex items-center gap-2 font-mono text-[10px] tracking-[0.22em] mt-6 group-hover:gap-3 transition-all">
+                    TAKE THE QUIZ <ArrowUpRight className="size-3" />
+                  </span>
+                </Link>
+              </article>
+            </BlurFade>
+          )}
+
+          {/* REST — magazine column flow */}
+          {!loading && !error && rest.length > 0 && (
+            <div className="grid md:grid-cols-3 gap-0 border-b-2 border-foreground">
+              {rest.map((article, i) => (
+                <BlurFade key={article.id} delay={0.4 + i * 0.05} inView>
+                  <article
+                    className={cn(
+                      'group h-full p-6 md:p-7 flex flex-col',
+                      (i % 3) !== 2 && 'md:border-r-2 border-foreground',
+                      i >= 3 && 'border-t-2 border-foreground'
+                    )}
+                  >
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="font-mono text-[10px] tracking-[0.2em] text-foreground border border-foreground/30 px-1.5 py-0.5">
+                        {article.category?.toUpperCase()}
+                      </span>
+                      <span className="font-mono text-[10px] tracking-[0.18em] text-muted-foreground">
+                        №{String(i + 2).padStart(2, '0')}
+                      </span>
+                    </div>
+                    <h3 className="font-display font-semibold text-2xl leading-[1.05] tracking-[-0.025em] mb-3 group-hover:text-foreground/80 transition-colors">
+                      {article.headline}
+                    </h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed flex-1 mb-5">
+                      {article.summary}
+                    </p>
+                    <div className="pt-4 border-t border-border flex items-center justify-between font-mono text-[10px] tracking-[0.18em] text-muted-foreground">
+                      <span>{article.source?.toUpperCase()} · {article.readTime}M</span>
+                      <div className="flex items-center gap-3">
+                        {article.url && (
+                          <a href={article.url} target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">
+                            <ExternalLink className="size-3" />
+                          </a>
+                        )}
+                        <Link href="/quiz" className="hover:text-foreground transition-colors inline-flex items-center gap-1">
+                          QUIZ <ArrowUpRight className="size-3" />
+                        </Link>
+                      </div>
+                    </div>
+                  </article>
+                </BlurFade>
+              ))}
+            </div>
+          )}
+
+          {/* COLOPHON */}
+          <BlurFade delay={0.9} inView>
+            <footer className="py-6 flex items-center justify-between flex-wrap gap-3">
+              <p className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground">
+                ARTICLES SUMMARIZED FROM RSS · UPDATED HOURLY
+              </p>
+              <Link href="/about" className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2">
+                HOW IT WORKS <ArrowUpRight className="size-3" />
+              </Link>
+            </footer>
+          </BlurFade>
+
+        </div>
+      </main>
     </div>
   )
 }
